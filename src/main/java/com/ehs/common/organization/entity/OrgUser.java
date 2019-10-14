@@ -159,4 +159,10 @@ public class OrgUser extends BaseEntity {
 		foreignClassesList=new LinkedList<String>();
 		foreignClassesList.add(SYS_USER_KEY+","+SysUser.class.getSimpleName()+","+SysUser.KEY);
 	}
+	
+	@Override
+	public boolean equals(Object ss) {
+
+		return true;
+	}	
 }

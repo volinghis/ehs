@@ -45,4 +45,9 @@ public class OrgJobLevelInfo extends BaseEntity{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public boolean equals(Object ss) {
+
+		return true;
+	}	
 }

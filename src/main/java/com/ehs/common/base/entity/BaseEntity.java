@@ -19,12 +19,14 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.ehs.common.auth.local.SysAccessUser;
 import com.ehs.common.base.config.DataConfig;
 import com.ehs.common.base.data.DataModel;
 import com.ehs.common.base.utils.AccessUtils;
 import com.ehs.common.base.utils.BaseUtils;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 
 
@@ -108,6 +110,8 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	/**
 	 * 数据拥有者创建时间
 	 */
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Timestamp ownerCreationTime;
 
 	private String creation;
@@ -120,6 +124,8 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	@Transient
 	private String creationOrgName;
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Timestamp creationTime;
 	
 	/**

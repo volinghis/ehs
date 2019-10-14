@@ -120,4 +120,11 @@ public class OrganizationInfo extends BaseEntity {
 		foreignClassesList.add(KEY+","+OrgUser.class.getSimpleName()+","+OrgUser.ORG_KEY);
 		foreignClassesList.add(KEY+","+OrganizationInfo.class.getSimpleName()+","+OrganizationInfo.PARENT_KEY);
 	}
+	
+	@Override
+	public boolean equals(Object ss) {
+
+		return true;
+	}	
+	
 }
