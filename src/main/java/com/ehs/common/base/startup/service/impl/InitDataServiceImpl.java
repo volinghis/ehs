@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
