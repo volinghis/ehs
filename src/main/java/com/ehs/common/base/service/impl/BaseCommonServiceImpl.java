@@ -195,7 +195,7 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 	@Cacheable(value = "defaultCache", key = "#key")
 	public BaseEntity findByKey(Class clazz, String key) {
 		StringBuilder builder = new StringBuilder(" select be from  ").append(clazz.getSimpleName())
-				.append(" be where (be.").append(BaseEntity.VERSION_ID).append(" = ?0  or be.").append(BaseEntity.DATA_MODEL).append(" = ?1 )  and be.key=?2 ");
+				.append(" be where (be.").append(BaseEntity.VERSION_ID).append(" = ?0  or be.").append(BaseEntity.DATA_MODEL).append(" = ?1 )  and be.key=?2 order by be."+BaseEntity.CREATION_TIME+" desc ");
 		List params = new LinkedList();
 		params.add(0, DataConfig.VERSION_EFFECTIVE);
 		params.add(1, DataModel.REMOVE.name());
