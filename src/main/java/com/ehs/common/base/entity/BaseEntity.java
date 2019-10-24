@@ -134,11 +134,7 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	@Enumerated(EnumType.STRING)
 	private DataModel dataModel;
 	
-	/**
-	 * 数据状态，启用停用，0启用，1停用
-	 */
-	private  Integer dataStatus=0;
-   
+	
 	
 	
 	
@@ -173,14 +169,7 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	
 	
 	
-	
-	
-	public Integer getDataStatus() {
-		return dataStatus;
-	}
-	public void setDataStatus(Integer dataStatus) {
-		this.dataStatus = dataStatus;
-	}
+
 	public String getOwnerName() {
 		if(StringUtils.isNotBlank(owner)) {
 			return AccessUtils.getUserNameByUserKey(owner);
