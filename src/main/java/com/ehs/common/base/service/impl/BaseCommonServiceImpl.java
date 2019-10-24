@@ -198,7 +198,7 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 				.append(" be where (be.").append(BaseEntity.VERSION_ID).append(" = ?0  or be.").append(BaseEntity.DATA_MODEL).append(" = ?1 )  and be.key=?2 order by be."+BaseEntity.CREATION_TIME+" desc ");
 		List params = new LinkedList();
 		params.add(0, DataConfig.VERSION_EFFECTIVE);
-		params.add(1, DataModel.REMOVE.name());
+		params.add(1, DataModel.REMOVE);
 		params.add(2, key);
 		List<BaseEntity> list = baseCommonDao.find(builder.toString(), params);
 		if (list != null && !list.isEmpty()) {
