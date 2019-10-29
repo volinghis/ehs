@@ -8,6 +8,8 @@
  */
 package com.ehs.common.base.service.impl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.persistence.Transient;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -34,6 +37,7 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import com.ehs.common.auth.entity.SysUser;
 import com.ehs.common.base.config.DataConfig;
 import com.ehs.common.base.dao.BaseCommonDao;
 import com.ehs.common.base.data.DataModel;
@@ -87,12 +91,39 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 	@CacheEvict(value = "defaultCache", key = "#baseEntity.key")
 	public BaseEntity saveOrUpdate(BaseEntity baseEntity) {
 		try {
+			if(baseEntity.getReCompletePoint()) {
+				Class ss=baseEntity.getClass();
+				 Field[] fields=ss.getDeclaredFields();  
+			        String[] fieldNames=new String[fields.length];  
+			        int fieldCount=0;
+			        int notNullCount=0;
+			        for(int i=0;i<fields.length;i++){  
+			        	Field field=fields[i];
+			        	if((!field.isAnnotationPresent(Transient.class))&&(!Modifier.isStatic(field.getModifiers()))&&!Modifier.isFinal(field.getModifiers())) {
+			        		field.setAccessible(true);
+			        		fieldCount++;
+			        		try {
+			        			if(field.get(baseEntity)!=null&&StringUtils.isNotBlank(field.get(baseEntity).toString())) {
+			        				notNullCount++;
+				        		}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+			        		
+			        	}
+
+			        }  
+			        baseEntity.setCompletePoint(Byte.valueOf(String.valueOf(notNullCount*100/fieldCount)));
+			}
+			
 			BaseEntity b = baseCommonDao.saveOrUpdate(baseEntity);
 			return b;
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}
+	
+
 
 	private void subDelete(BaseEntity baseEntity) {
 

@@ -67,8 +67,13 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	public static final String ATTRIBUTE3 = "attribute3" ;
 	public static final String ATTRIBUTE4 = "attribute4" ;
 	public static final String ATTRIBUTE5 = "attribute5" ;
-
-
+	public static final String COMPLETE_POINT = "completePoint" ;
+	
+	
+	private Byte completePoint=0;
+	
+	@Transient
+	private Boolean reCompletePoint=true;
 
 	/**
 	 * 引用的外键表，数值以,分割。[foreignKey,foreignClassName,refKey]数据模型:在SysRole实体中：,com.ehs.security.entity.SysRoleMenu,role
@@ -170,6 +175,18 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	
 	
 
+	public Boolean getReCompletePoint() {
+		return reCompletePoint;
+	}
+	public void setReCompletePoint(Boolean reCompletePoint) {
+		this.reCompletePoint = reCompletePoint;
+	}
+	public Byte getCompletePoint() {
+		return completePoint;
+	}
+	public void setCompletePoint(Byte completePoint) {
+		this.completePoint = completePoint;
+	}
 	public String getOwnerName() {
 		if(StringUtils.isNotBlank(owner)) {
 			return AccessUtils.getUserNameByUserKey(owner);
