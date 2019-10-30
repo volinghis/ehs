@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -36,6 +37,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.ehs.common.auth.entity.SysUser;
 import com.ehs.common.base.config.DataConfig;
@@ -43,6 +45,7 @@ import com.ehs.common.base.dao.BaseCommonDao;
 import com.ehs.common.base.data.DataModel;
 import com.ehs.common.base.entity.BaseEntity;
 import com.ehs.common.base.service.BaseCommonService;
+import com.ehs.common.base.utils.BaseUtils;
 import com.ehs.common.organization.entity.OrgUser;
 
 import net.sf.ehcache.CacheManager;
@@ -64,205 +67,117 @@ import net.sf.ehcache.CacheManager;
 @Service
 public class BaseCommonServiceImpl implements BaseCommonService {
 
-	private static Logger logger = LoggerFactory.getLogger(BaseCommonService.class);
-
 	@Resource
 	private BaseCommonDao baseCommonDao;
 
-	/**
-	 * @see com.ehs.edm.base.service.BaseCommonService#saveOrUpdate(com.ehs.edm.base.bean.BaseEntity)
-	 * @Function: BaseCommonServiceImpl.java
-	 * @Description: 该函数的功能描述
-	 *
-	 * @param:描述1描述
-	 * @return：返回结果描述
-	 * @throws：异常描述
-	 *
-	 * @version: v1.0.0
-	 * @author: chentm
-	 * @date: 2019年5月7日 上午9:21:47
-	 *
-	 *        Modification History: Date Author Version Description
-	 *        ---------------------------------------------------------* 2019年5月7日
-	 *        chentm v1.0.0 修改原因
-	 */
-	@Override
 	@Transactional
-	@CacheEvict(value = "defaultCache", key = "#baseEntity.key")
-	public BaseEntity saveOrUpdate(BaseEntity baseEntity) {
-		try {
-			if(baseEntity.getReCompletePoint()) {
-				Class ss=baseEntity.getClass();
-				 Field[] fields=ss.getDeclaredFields();  
-			        String[] fieldNames=new String[fields.length];  
-			        int fieldCount=0;
-			        int notNullCount=0;
-			        for(int i=0;i<fields.length;i++){  
-			        	Field field=fields[i];
-			        	if((!field.isAnnotationPresent(Transient.class))&&(!Modifier.isStatic(field.getModifiers()))&&!Modifier.isFinal(field.getModifiers())) {
-			        		field.setAccessible(true);
-			        		fieldCount++;
-			        		try {
-			        			if(field.get(baseEntity)!=null&&StringUtils.isNotBlank(field.get(baseEntity).toString())) {
-			        				notNullCount++;
-				        		}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-			        		
-			        	}
-
-			        }  
-			        baseEntity.setCompletePoint(Byte.valueOf(String.valueOf(notNullCount*100/fieldCount)));
+	@Override
+	public <T extends BaseEntity> T saveOrUpdate(T t) {
+		Assert.notNull(t, "需要操作的实例不能为空");
+		T old = null;
+		if (StringUtils.isNotBlank(t.getKey())) {
+			old = (T) findByKey(t.getClass(), t.getKey());
+		}
+		if (old == null) {
+			t.initCreate();
+			t.setId(null);
+			baseCommonDao.save(t);
+		} else {
+			if (old.getDataModel()== DataModel.REMOVE) {
+				throw new RuntimeException("错误的尝试更新一个已经被删除的实例");
 			}
-			
-			BaseEntity b = baseCommonDao.saveOrUpdate(baseEntity);
-			return b;
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-	}
 	
-
-
-	private void subDelete(BaseEntity baseEntity) {
-
-		List<String> foreignClasses = baseEntity.getForeignClasses();
-
-		if (foreignClasses != null && foreignClasses.size() > 0) {
-			foreignClasses.stream().forEach(f -> {
-				String[] ss = StringUtils.split(f, ",");
-				String foreignKey = ss[0];
-				String className = ss[1];
-				String refKey = ss[2];
-				String v = "";
-				try {
-					v = (String) BeanUtils.findDeclaredMethod(baseEntity.getClass(),
-							(new StringBuilder()).append("get").append(Character.toUpperCase(foreignKey.charAt(0)))
-									.append(foreignKey.substring(1)).toString())
-							.invoke(baseEntity);
-
-					if (StringUtils.isBlank(v)) {
-						StringBuilder builder = (new StringBuilder()).append("无法获取到数据!实体:")
-								.append(baseEntity.getClass()).append(",key=").append(baseEntity.getKey());
-						logger.error(builder.toString());
-						throw new RuntimeException();
-					}
-
-					StringBuilder hql = new StringBuilder(" select fe from ").append(className).append(" fe where fe.")
-							.append(BaseEntity.VERSION_ID).append("=?0   and fe.").append(refKey).append("=?1 ");
-					List params = new LinkedList();
-					params.add(0, DataConfig.VERSION_EFFECTIVE);
-					params.add(1, v);
-					List<BaseEntity> baseList = baseCommonDao.find(hql.toString(), params);
-					if (baseList != null && baseList.size() > 0) {
-						baseList.forEach(s -> {
-							delete(s);
-						});
-					}
-				} catch (Exception e) {
-					logger.error(e.getMessage());
-					throw new RuntimeException(e);
-				}
-
-			});
+			if (!StringUtils.equals(t.getId(), old.getId())) {
+				throw new RuntimeException("错误的尝试更新一个无法定位的实例");
+			}
+			T his = null;
+			try {
+				his = (T) Class.forName(old.getClass().getName() + DataConfig.TABLE_HIS_SUFFIX)
+						.getConstructor().newInstance();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			BeanUtils.copyProperties(old, his, BaseEntity.ID);
+			baseCommonDao.save(his);
+			t.initUpdate();
+			t.setDataModel(DataModel.UPDATE);
+			baseCommonDao.save(t);
 		}
-		baseCommonDao.delete(baseEntity);
+		return t;
 
 	}
 
-	/**
-	 * @see com.ehs.security.service.BaseCommonService#deleteByWhereCase(java.lang.Class,
-	 *      org.springframework.data.jpa.domain.Specification)
-	 * @Function: BaseCommonServiceImpl.java
-	 * @Description: 该函数的功能描述
-	 *
-	 * @param:描述1描述
-	 * @return：返回结果描述
-	 * @throws：异常描述
-	 *
-	 * @version: v1.0.0
-	 * @author: chentm
-	 * @date: 2019年6月20日 上午9:41:55
-	 *
-	 *        Modification History: Date Author Version Description
-	 *        ---------------------------------------------------------* 2019年6月20日
-	 *        chentm v1.0.0 修改原因
-	 */
-	@Override
 	@Transactional
-	public void deleteByKey(Class clazz, String key) {
-		BaseEntity baseEntity = findByKey(clazz, key);
-		if (baseEntity != null) {
-			delete(baseEntity);
-		}
+	@Override
+	public <T extends BaseEntity> T deleteByKey(Class<T> tc, String key) {
+		T t = findByKey(tc, key);
+		return delete(t);
+
 	}
 
-	/**
-	 * @see com.ehs.security.service.BaseCommonService#getSession()
-	 * @Function: BaseCommonServiceImpl.java
-	 * @Description: 该函数的功能描述
-	 *
-	 * @param:描述1描述
-	 * @return：返回结果描述
-	 * @throws：异常描述
-	 *
-	 * @version: v1.0.0
-	 * @author: chentm
-	 * @date: 2019年7月19日 下午4:39:07
-	 *
-	 *        Modification History: Date Author Version Description
-	 *        ---------------------------------------------------------* 2019年7月19日
-	 *        chentm v1.0.0 修改原因
-	 */
+	@Override
+	public <T extends BaseEntity> T findByKey(Class<T> t, String key) {
+		StringBuilder builder = new StringBuilder(" select be from  ");
+		builder.append(t.getSimpleName());
+		builder.append(" be where be.");
+		builder.append(BaseEntity.KEY);
+		builder.append(" = ?0  order by  ");
+		builder.append(BaseEntity.CREATION_TIME);
+		builder.append(" desc");
+		List<Object> params = new LinkedList<Object>();
+		params.add(0, key);
+		List<?> list = baseCommonDao.find(builder.toString(), params);
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
+		T e = (T) list.get(0);
+		return e;
+	}
+
+	@Override
+	public List<?> findAll(Class<? extends BaseEntity> clazz) {
+		StringBuilder builder = new StringBuilder(" select be from  ");
+		builder.append(clazz.getSimpleName());
+		builder.append(" be where be.");
+		builder.append(BaseEntity.DATA_MODEL);
+		builder.append(" in ?0 order by ");
+		builder.append(BaseEntity.CREATION_TIME);
+		builder.append(" desc");
+		List<Object> params = new LinkedList<Object>();
+		List<DataModel> ll=new LinkedList<DataModel>();
+		ll.add(DataModel.CREATE);
+		ll.add(DataModel.UPDATE);
+		params.add(0, ll);
+		return baseCommonDao.find(builder.toString(), params);
+	}
+
 	@Override
 	public Session getSession() {
 		return baseCommonDao.getSession();
 	}
 
-	@Override
 	@Transactional
-	@Cacheable(value = "defaultCache", key = "#key")
-	public BaseEntity findByKey(Class clazz, String key) {
-		StringBuilder builder = new StringBuilder(" select be from  ").append(clazz.getSimpleName())
-				.append(" be where (be.").append(BaseEntity.VERSION_ID).append(" = ?0  or be.").append(BaseEntity.DATA_MODEL).append(" = ?1 )  and be.key=?2 order by be."+BaseEntity.CREATION_TIME+" desc ");
-		List params = new LinkedList();
-		params.add(0, DataConfig.VERSION_EFFECTIVE);
-		params.add(1, DataModel.REMOVE);
-		params.add(2, key);
-		List<BaseEntity> list = baseCommonDao.find(builder.toString(), params);
-		if (list != null && !list.isEmpty()) {
-			BaseEntity en = list.stream().findFirst().get();
-			getSession().evict(en);
-			return en;
-		} else {
-			return null;
+	@Override
+	public <T extends BaseEntity> T delete(T t) {
+		Assert.notNull(t, "将要删除的实例不存在");
+
+		if (DataModel.REMOVE.equals(t.getDataModel())) {
+			throw new RuntimeException("错误的尝试删除一个已经被删除的实例");
 		}
 
-	}
-
-	@Transactional
-	@Override
-	public List<? extends BaseEntity> findAll(Class clazz) {
-		StringBuilder builder = new StringBuilder(" select be from  ").append(clazz.getSimpleName())
-				.append(" be where be.").append(BaseEntity.VERSION_ID).append(" = ?0  order by ")
-				.append(BaseEntity.CREATION_TIME).append(" desc");
-		List params = new LinkedList();
-		params.add(0, DataConfig.VERSION_EFFECTIVE);
-		List list = baseCommonDao.find(builder.toString(), params);
-		if (list != null && !list.isEmpty()) {
-			list.forEach(s -> {
-				getSession().evict(s);
-			});
+		T t1 = null;
+		try {
+			t1 = (T) Class.forName(t.getClass().getName() + DataConfig.TABLE_HIS_SUFFIX).getConstructor()
+					.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-		return list;
-	}
-
-	@Transactional
-	@Override
-	@CacheEvict(value = "defaultCache", key = "#entity.key")
-	public void delete(BaseEntity entity) {
-		subDelete(entity);
+		BeanUtils.copyProperties(t, t1, BaseEntity.ID);
+		baseCommonDao.save(t1);
+		t.initUpdate();
+		t.setDataModel(DataModel.REMOVE);
+		baseCommonDao.save(t);
+		return t;
 	}
 
 }

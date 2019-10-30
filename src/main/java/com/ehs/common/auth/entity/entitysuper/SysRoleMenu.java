@@ -1,12 +1,11 @@
-package com.ehs.common.auth.entity;
+package com.ehs.common.auth.entity.entitysuper;
 
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
-import com.ehs.common.base.config.DataConfig;
 import com.ehs.common.base.entity.BaseEntity;
 
 
@@ -25,11 +24,76 @@ import com.ehs.common.base.entity.BaseEntity;
 *---------------------------------------------------------*
 * 2019年5月23日     Mapleave           v1.0.0               修改原因
 */
-@Entity
-@Table(name = "SYS_ROLE_MENU",uniqueConstraints = @UniqueConstraint(columnNames = DataConfig.TABLE_UNIQUE_KEY))
-public class SysRoleMenu extends com.ehs.common.auth.entity.entitysuper.SysRoleMenu {
+@MappedSuperclass
+public  abstract class SysRoleMenu extends BaseEntity {
 	
 	private static final long serialVersionUID = 1L;
 	
+	public static final String ROLE_KEY="roleKey";
+	public static final String MENU_KEY="menuKey";
+	
+	/**
+	 * 角色编码
+	 */
+	private String roleKey;
+	
+	/**
+	 * 菜单编码
+	 */
+	private String menuKey;
+
+	
+
+
+	
+
+
+
+
+	public String getRoleKey() {
+		return roleKey;
+	}
+
+
+
+
+
+
+
+
+
+	public void setRoleKey(String roleKey) {
+		this.roleKey = roleKey;
+	}
+
+
+
+
+
+
+
+
+
+	public String getMenuKey() {
+		return menuKey;
+	}
+
+
+
+
+
+
+
+
+
+	public void setMenuKey(String menuKey) {
+		this.menuKey = menuKey;
+	}
+
+
+
+
+
+
 
 }

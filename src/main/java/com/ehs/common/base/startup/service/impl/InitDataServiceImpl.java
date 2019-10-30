@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ehs.common.auth.entity.SysMenu;
+import com.ehs.common.base.config.DataConfig;
 import com.ehs.common.base.entity.BaseEntity;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.startup.service.InitDataService;
@@ -37,8 +38,8 @@ public class InitDataServiceImpl implements InitDataService {
 			if(entity == null) {
 				baseCommonService.saveOrUpdate(baseEntity);
 			}else {
-				if(!baseEntity.equals(entity)) {
-					baseCommonService.delete(entity);
+				if(DataConfig.DATA_UPDATED==baseEntity.equals(entity)) {
+					baseCommonService.deleteByKey(entity.getClass(),entity.getKey());
 					baseCommonService.saveOrUpdate(baseEntity);
 				}
 			}

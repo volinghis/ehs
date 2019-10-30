@@ -16,6 +16,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -75,10 +76,7 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	@Transient
 	private Boolean reCompletePoint=true;
 
-	/**
-	 * 引用的外键表，数值以,分割。[foreignKey,foreignClassName,refKey]数据模型:在SysRole实体中：,com.ehs.security.entity.SysRoleMenu,role
-	 */
-	public  abstract List<String> getForeignClasses();
+
 
 	
 	/**
@@ -98,6 +96,7 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	/**
 	 * 数据版本号,0有效，1失效
 	 */
+	@Version
 	private Long versionId;
 
 	/**
@@ -311,6 +310,7 @@ public  abstract class BaseEntity implements java.io.Serializable{
 		this.setCreationTime(_ts);
 		this.setOwnerCreationTime(_ts);
 		this.setVersionId(DataConfig.VERSION_EFFECTIVE);
+		this.setDataModel(DataModel.CREATE);
 		if(StringUtils.isBlank(this.getKey())){
 			this.setKey(UUID.randomUUID().toString());
 		}
@@ -349,7 +349,6 @@ public  abstract class BaseEntity implements java.io.Serializable{
 		if(SysAccessUser.get()!=null&&StringUtils.isNotBlank(SysAccessUser.get().getOrgKey())) {
 			this.setCreationOrg(SysAccessUser.get().getOrgKey());
 		}
-		this.setId(null);
 	}
 	public String getOwner() {
 		return owner;

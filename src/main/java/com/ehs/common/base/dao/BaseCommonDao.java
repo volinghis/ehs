@@ -39,59 +39,11 @@ import com.ehs.common.base.entity.BaseEntity;
 */
 public interface BaseCommonDao {
 
+	public <T extends BaseEntity> T save(T t);
+	
+	
+	public List<?> find(String hql,List<Object> params);
+	
 	public Session getSession();
-	
-	/**
-	 * 
-	* @Function: BaseCommonDao.java
-	* @Description: 该函数的功能描述
-	*
-	* @param:描述1描述
-	* @return：返回结果描述
-	* @throws：异常描述
-	*
-	* @version: v1.0.0
-	* @author: chentm
-	* @date: 2019年5月7日 下午3:57:27 
-	*
-	* Modification History:
-	* Date         Author          Version            Description
-	*---------------------------------------------------------*
-	* 2019年5月7日     chentm           v1.0.0               修改原因
-	 */
-	public BaseEntity saveOrUpdate(BaseEntity baseEntity) ;
-	
-	/**
-	 * 
-	* @Function: BaseCommonDao.java
-	* @Description: 根据ID
-	*
-	* @param:描述1描述
-	* @return：返回结果描述
-	* @throws：异常描述
-	*
-	* @version: v1.0.0
-	* @author: chentm
-	* @date: 2019年5月7日 下午3:57:30 
-	*
-	* Modification History:
-	* Date         Author          Version            Description
-	*---------------------------------------------------------*
-	* 2019年5月7日     chentm           v1.0.0               修改原因
-	 */
-	public void delete(BaseEntity baseEntity) ;
-
-	/**
-	 * 
-	 * @param hql
-	 * @param params
-	 * @return
-	 */
-	public List<BaseEntity> find(String hql,List<Object> params);
-	/**
-	 * 
-	 * @return
-	 */
-	public EntityManager getEntityManager();
 	
 }

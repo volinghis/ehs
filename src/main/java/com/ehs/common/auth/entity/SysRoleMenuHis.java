@@ -4,9 +4,8 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
-import com.ehs.common.base.config.DataConfig;
+import com.ehs.common.auth.entity.entitysuper.SysRoleMenu;
 import com.ehs.common.base.entity.BaseEntity;
 
 
@@ -26,10 +25,10 @@ import com.ehs.common.base.entity.BaseEntity;
 * 2019年5月23日     Mapleave           v1.0.0               修改原因
 */
 @Entity
-@Table(name = "SYS_ROLE_MENU",uniqueConstraints = @UniqueConstraint(columnNames = DataConfig.TABLE_UNIQUE_KEY))
-public class SysRoleMenu extends com.ehs.common.auth.entity.entitysuper.SysRoleMenu {
+@Table(name = "SYS_ROLE_MENU_HIS")
+public class SysRoleMenuHis extends SysRoleMenu {
 	
 	private static final long serialVersionUID = 1L;
 	
-
+	
 }

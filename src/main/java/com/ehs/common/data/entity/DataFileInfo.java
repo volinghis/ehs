@@ -12,7 +12,9 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
+import com.ehs.common.base.config.DataConfig;
 import com.ehs.common.base.entity.BaseEntity;
 
 /**   
@@ -30,217 +32,16 @@ import com.ehs.common.base.entity.BaseEntity;
 * 2019年6月26日      chentm          v1.0.0               修改原因
 */
 @Entity
-@Table(name="DATA_FILE_INFO")
-public class DataFileInfo extends BaseEntity{
+@Table(name="DATA_FILE_INFO",uniqueConstraints = @UniqueConstraint(columnNames = DataConfig.TABLE_UNIQUE_KEY))
+public class DataFileInfo extends com.ehs.common.data.entity.entitysuper.DataFileInfo{
 
 	private static final long serialVersionUID = 1L;
-	public static final String NAME="name";
-	public static final String TYPE="type";
-	public static final String SIZE="size";
-	public static final String ENTITY_KEY="entityKey";
-	public static final String FILE_ID="fileId";
-	
-	private String name;
-	
-	private String type;
-	
-	private String fileSize;
-	
-	
-	private String entityKey;
-	
-	private String fileId;
-	
-	
-	
-	
-	
-	
 
 
 
 
 
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
 
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * @return the fileSize
-	 */
-	public String getFileSize() {
-		return fileSize;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * @param fileSize the fileSize to set
-	 */
-	public void setFileSize(String fileSize) {
-		this.fileSize = fileSize;
-	}
-
-
-
-	public String getEntityKey() {
-		return entityKey;
-	}
-
-
-
-	public void setEntityKey(String entityKey) {
-		this.entityKey = entityKey;
-	}
-
-
-	/**
-	 * @return the fileId
-	 */
-	public String getFileId() {
-		return fileId;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * @param fileId the fileId to set
-	 */
-	public void setFileId(String fileId) {
-		this.fileId = fileId;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-	/** 
-	* @see com.ehs.common.base.entity.security.entity.BaseEntity#getForeignClasses()  
-	* @Function: FileInfo.java
-	* @Description: 该函数的功能描述
-	*
-	* @param:描述1描述
-	* @return：返回结果描述
-	* @throws：异常描述
-	*
-	* @version: v1.0.0
-	* @author: chentm
-	* @date: 2019年6月26日 下午4:23:47 
-	*
-	* Modification History:
-	* Date         Author          Version            Description
-	*---------------------------------------------------------*
-	* 2019年6月26日      chentm           v1.0.0               修改原因
-	*/
-	@Override
-	public List<String> getForeignClasses() {
-		return null;
-	}
 	
 }

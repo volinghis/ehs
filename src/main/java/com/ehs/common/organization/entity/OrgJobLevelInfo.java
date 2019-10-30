@@ -4,50 +4,20 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
+import com.ehs.common.base.config.DataConfig;
 import com.ehs.common.base.entity.BaseEntity;
 
 
 @Entity
-@Table(name="ORG_JOB_LEVEL_INFO")
-public class OrgJobLevelInfo extends BaseEntity{
+@Table(name="ORG_JOB_LEVEL_INFO",uniqueConstraints = @UniqueConstraint(columnNames = DataConfig.TABLE_UNIQUE_KEY))
+public class OrgJobLevelInfo extends com.ehs.common.organization.entity.entitysuper.OrgJobLevelInfo{
 
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String DATA_CODE="dataCode";
-	public static final String NAME="name";
-	
-	private String dataCode;
-	private String name;
-	
-	
-	
 
-	
-	
-	public String getDataCode() {
-		return dataCode;
-	}
-	public void setDataCode(String dataCode) {
-		this.dataCode = dataCode;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	@Override
-	public List<String> getForeignClasses() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public boolean equals(Object ss) {
-
-		return true;
-	}	
 }

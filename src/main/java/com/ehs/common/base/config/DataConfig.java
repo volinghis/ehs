@@ -20,8 +20,14 @@ public class DataConfig {
 	 */
 	public static final long VERSION_EXPIRE=1l;
 	
-	 @Bean
-	 public RestTemplate restTemplate(RestTemplateBuilder builder){
-	        return builder.build();
-	 }
+	public static final String TABLE_HIS_SUFFIX="His";
+	
+	public static final String TABLE_UNIQUE_KEY="DATA_KEY";
+	
+	public static final boolean DATA_UPDATED=true;
+	
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder builder){
+	       return builder.build();
+	}
 }
