@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
@@ -34,6 +35,8 @@ public  abstract class SysUser extends BaseEntity {
 	public static final String PASSWORD="password";
 	public static final String STATE="state";
 	public static final String USER_KEY="userKey";
+	public static final String ROLE_KEYS="roleKeys";
+	
 	private String account;
 	
 	private String password;
@@ -43,10 +46,21 @@ public  abstract class SysUser extends BaseEntity {
 	 */
 	private Integer state;
 
+	@Column(length = 4000)
+	private String roleKeys;
 	
 	
 	
-	
+
+	public String getRoleKeys() {
+		return roleKeys;
+	}
+
+
+	public void setRoleKeys(String roleKeys) {
+		this.roleKeys = roleKeys;
+	}
+
 
 	public String getUserKey() {
 		return userKey;

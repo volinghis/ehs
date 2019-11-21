@@ -22,10 +22,9 @@ import org.springframework.core.env.Environment;
 import com.ehs.common.auth.local.SysAccessUser;
 import com.ehs.common.auth.local.bean.LocalUser;
 import com.ehs.common.auth.utils.SessionBean;
-import com.ehs.common.auth.utils.SessionConstants;
 import com.ehs.common.base.utils.SpringUtils;
 
-
+@Deprecated
 public class AuthFilter implements Filter{
 
 	private List<String> exculusionsList;
@@ -41,23 +40,24 @@ public class AuthFilter implements Filter{
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		HttpServletRequest httpRequest=(HttpServletRequest)request;
-		HttpServletResponse httpResponse=(HttpServletResponse)response;
-		
-		if(matchs(httpRequest.getServletPath())) {
-			chain.doFilter(httpRequest, response);
-			return ;
-		}
-		
-		SessionBean sessionBean=SpringUtils.getBean(SessionBean.class);
-		int statusCode=sessionBean.valid(httpRequest);
-		if(statusCode!=SessionConstants.VALID_OK_CODE) {
-			httpResponse.setStatus(statusCode);
-		}else {
-			String sysUserKey=(String)httpRequest.getSession().getAttribute(SessionConstants.SESSION_SYSUSER_KEY);
-			SysAccessUser.set(LocalUser.initBySysUser(sysUserKey));
-			chain.doFilter(httpRequest, httpResponse);
-		}
+//		HttpServletRequest httpRequest=(HttpServletRequest)request;
+//		HttpServletResponse httpResponse=(HttpServletResponse)response;
+//		
+//		if(matchs(httpRequest.getServletPath())) {
+//			chain.doFilter(httpRequest, response);
+//			return ;
+//		}
+//		
+//		SessionBean sessionBean=SpringUtils.getBean(SessionBean.class);
+//		int statusCode=sessionBean.valid(httpRequest);
+//		if(statusCode!=SessionConstants.VALID_OK_CODE) {
+//			httpResponse.setStatus(statusCode);
+//		}else {
+//			String sysUserKey=(String)httpRequest.getSession().getAttribute(SessionConstants.SESSION_SYSUSER_KEY);
+//			LocalUser lu=new LocalUser();
+//			SysAccessUser.set(lu.initBySysUser(sysUserKey));
+//			chain.doFilter(httpRequest, httpResponse);
+//		}
 	}
 	
 	public boolean matchs(String url) {

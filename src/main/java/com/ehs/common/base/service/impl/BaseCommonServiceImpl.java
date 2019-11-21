@@ -78,6 +78,29 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 		if (StringUtils.isNotBlank(t.getKey())) {
 			old = (T) findByKey(t.getClass(), t.getKey());
 		}
+		if(t.getReCompletePoint()) {
+			Class ss=t.getClass();
+			 Field[] fields=ss.getDeclaredFields();  
+		        int fieldCount=0;
+		        int notNullCount=0;
+		        for(int i=0;i<fields.length;i++){  
+		        	Field field=fields[i];
+		        	if((!field.isAnnotationPresent(Transient.class))&&(!Modifier.isStatic(field.getModifiers()))&&!Modifier.isFinal(field.getModifiers())) {
+		        		field.setAccessible(true);
+		        		fieldCount++;
+		        		try {
+		        			if(field.get(t)!=null&&StringUtils.isNotBlank(field.get(t).toString())) {
+		        				notNullCount++;
+			        		}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+		        		
+		        	}
+
+		        }  
+		        t.setCompletePoint(Byte.valueOf(String.valueOf(notNullCount*100/fieldCount)));
+		}
 		if (old == null) {
 			t.initCreate();
 			t.setId(null);

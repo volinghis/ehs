@@ -14,18 +14,17 @@ public class LocalUser {
 	private String orgKey;
 	
 
-	public static LocalUser initBySysUser(String sysUserKey) {
-		LocalUser lu=new LocalUser();
+	public  LocalUser initBySysUser(String sysUserKey) {
 		SysUser su=(SysUser)SpringUtils.getBean(BaseCommonService.class).findByKey(SysUser.class, sysUserKey);
-		lu.setSysUserKey(su.getKey());
+		this.setSysUserKey(su.getKey());
 		String refUser=su.getUserKey();
 		if(StringUtils.isNotBlank(refUser)) {
 			OrgUser uu= (OrgUser)SpringUtils.getBean(BaseCommonService.class).findByKey(OrgUser.class, refUser);
-			lu.setOrgKey(uu.getOrgKey());
-			lu.setUserKey(su.getUserKey());
+			this.setOrgKey(uu.getOrgKey());
+			this.setUserKey(su.getUserKey());
 		}
 
-		return lu;
+		return this;
 	}
 
 

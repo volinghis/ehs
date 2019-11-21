@@ -114,8 +114,7 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	/**
 	 * 数据拥有者创建时间
 	 */
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",  timezone="GMT+8")
 	private Timestamp ownerCreationTime;
 
 	private String creation;
@@ -128,8 +127,7 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	@Transient
 	private String creationOrgName;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",  timezone="GMT+8")
 	private Timestamp creationTime;
 	
 	/**

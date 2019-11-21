@@ -40,6 +40,10 @@ public  abstract  class SysMenu extends BaseEntity {
 	public static final String URL="url";
 	
 
+	public static final String ROLES="roles";
+	
+	
+	
 	/**
 	 * 菜单编码
 	 */
@@ -68,9 +72,19 @@ public  abstract  class SysMenu extends BaseEntity {
 	private String icon;
 	
 	
-
+	@Column(length = 4000)
+	private String roles;
 
 	
+	
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
 
 	public String getDataCode() {
 		return dataCode;
