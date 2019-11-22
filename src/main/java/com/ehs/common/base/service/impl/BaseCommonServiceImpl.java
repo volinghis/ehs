@@ -48,7 +48,6 @@ import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.utils.BaseUtils;
 import com.ehs.common.organization.entity.OrgUser;
 
-import net.sf.ehcache.CacheManager;
 
 /**
  * Copyright: Copyright (c) 2019 西安东恒鑫源软件开发有限公司
@@ -72,6 +71,7 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 
 	@Transactional
 	@Override
+	@CacheEvict(value = "defaultCache", key = "#t.key")
 	public <T extends BaseEntity> T saveOrUpdate(T t) {
 		Assert.notNull(t, "需要操作的实例不能为空");
 		T old = null;
@@ -132,13 +132,33 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 
 	@Transactional
 	@Override
+	@CacheEvict(value = "defaultCache", key = "#key")
 	public <T extends BaseEntity> T deleteByKey(Class<T> tc, String key) {
 		T t = findByKey(tc, key);
-		return delete(t);
+		Assert.notNull(t, "将要删除的实例不存在");
+
+		if (DataModel.REMOVE.equals(t.getDataModel())) {
+			throw new RuntimeException("错误的尝试删除一个已经被删除的实例");
+		}
+
+		T t1 = null;
+		try {
+			t1 = (T) Class.forName(t.getClass().getName() + DataConfig.TABLE_HIS_SUFFIX).getConstructor()
+					.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		BeanUtils.copyProperties(t, t1, BaseEntity.ID);
+		baseCommonDao.save(t1);
+		t.initUpdate();
+		t.setDataModel(DataModel.REMOVE);
+		baseCommonDao.save(t);
+		return t;
 
 	}
 
 	@Override
+	@Cacheable(value = "defaultCache", key = "#key")
 	public <T extends BaseEntity> T findByKey(Class<T> t, String key) {
 		StringBuilder builder = new StringBuilder(" select be from  ");
 		builder.append(t.getSimpleName());
@@ -179,28 +199,6 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 		return baseCommonDao.getSession();
 	}
 
-	@Transactional
-	@Override
-	public <T extends BaseEntity> T delete(T t) {
-		Assert.notNull(t, "将要删除的实例不存在");
 
-		if (DataModel.REMOVE.equals(t.getDataModel())) {
-			throw new RuntimeException("错误的尝试删除一个已经被删除的实例");
-		}
-
-		T t1 = null;
-		try {
-			t1 = (T) Class.forName(t.getClass().getName() + DataConfig.TABLE_HIS_SUFFIX).getConstructor()
-					.newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		BeanUtils.copyProperties(t, t1, BaseEntity.ID);
-		baseCommonDao.save(t1);
-		t.initUpdate();
-		t.setDataModel(DataModel.REMOVE);
-		baseCommonDao.save(t);
-		return t;
-	}
 
 }

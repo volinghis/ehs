@@ -39,7 +39,6 @@ public interface BaseCommonService {
 
 	public <T extends BaseEntity> T deleteByKey(Class<T> t,String key);
 	
-	public <T extends BaseEntity> T delete(T t);
 
 	public <T extends BaseEntity> T findByKey(Class<T> t, String key);
 	
