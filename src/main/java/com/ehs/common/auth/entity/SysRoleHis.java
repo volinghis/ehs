@@ -29,7 +29,7 @@ import com.ehs.common.base.entity.BaseEntity;
 * 2019年5月13日     zhaol           v1.0.0               修改原因
 */
 @Entity
-@Table(name = "SYS_ROLE_HIS")
+@Table(name = "HIS_SYS_ROLE")
 public class SysRoleHis extends SysRole {
 
 	private static final long serialVersionUID = 1L;

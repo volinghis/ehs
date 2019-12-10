@@ -26,7 +26,7 @@ import com.ehs.common.base.entity.BaseEntity;
 * 2019年5月13日     zhaol           v1.0.0               修改原因
 */
 @Entity
-@Table(name = "SYS_USER_HIS")
+@Table(name = "HIS_SYS_USER")
 public class SysUserHis extends SysUser {
 
 	private static final long serialVersionUID = 1L;

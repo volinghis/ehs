@@ -31,7 +31,7 @@ import com.ehs.common.data.entity.entitysuper.DataFileInfo;
 * 2019年6月26日      chentm          v1.0.0               修改原因
 */
 @Entity
-@Table(name="DATA_FILE_INFO_HIS")
+@Table(name="HIS_DATA_FILE_INFO")
 public class DataFileInfoHis extends DataFileInfo{
 
 	private static final long serialVersionUID = 1L;

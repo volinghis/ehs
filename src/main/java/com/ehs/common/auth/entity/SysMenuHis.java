@@ -29,7 +29,7 @@ import com.ehs.common.base.entity.BaseEntity;
 * 2019年5月13日     zhaol           v1.0.0               修改原因
 */
 @Entity
-@Table(name = "SYS_MENU_HIS")
+@Table(name = "HIS_SYS_MENU")
 public class SysMenuHis extends SysMenu {
 
 	/**

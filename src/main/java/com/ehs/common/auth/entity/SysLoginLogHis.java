@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 * 2019年6月18日    qjj           v1.0.0               修改原因
 */
 @Entity
-@Table(name="SYS_LOGIN_LOG_HIS")
+@Table(name="HIS_SYS_LOGIN_LOG")
 public class SysLoginLogHis extends SysLoginLog  {
 
 	/**

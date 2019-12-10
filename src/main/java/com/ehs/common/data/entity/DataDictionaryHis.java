@@ -34,7 +34,7 @@ import com.ehs.common.data.entity.entitysuper.DataDictionary;
 * 2019年6月26日      chentm          v1.0.0               修改原因
 */
 @Entity
-@Table(name="DATA_DICTIONARY_HIS")
+@Table(name="HIS_DATA_DICTIONARY")
 public class DataDictionaryHis extends DataDictionary{
 
 	/**
