@@ -99,7 +99,9 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 		        	}
 
 		        }  
-		        t.setCompletePoint(Byte.valueOf(String.valueOf(notNullCount*100/fieldCount)));
+		        if(fieldCount!=0) {
+			        t.setCompletePoint(Byte.valueOf(String.valueOf(notNullCount*100/fieldCount)));
+		        }
 		}
 		if (old == null) {
 			t.initCreate();
@@ -158,7 +160,7 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 	}
 
 	@Override
-	@Cacheable(value = "defaultCache", key = "#key")
+	@Cacheable(value = "defaultCache", key = "#key",unless = "#result == null")
 	public <T extends BaseEntity> T findByKey(Class<T> t, String key) {
 		StringBuilder builder = new StringBuilder(" select be from  ");
 		builder.append(t.getSimpleName());
