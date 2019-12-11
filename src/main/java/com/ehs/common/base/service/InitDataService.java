@@ -1,4 +1,4 @@
-package com.ehs.common.base.startup.service;
+package com.ehs.common.base.service;
 
 import java.util.List;
 

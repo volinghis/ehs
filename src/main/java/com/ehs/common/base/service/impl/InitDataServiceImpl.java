@@ -1,4 +1,4 @@
-package com.ehs.common.base.startup.service.impl;
+package com.ehs.common.base.service.impl;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import com.ehs.common.auth.entity.SysMenu;
 import com.ehs.common.base.config.DataConfig;
 import com.ehs.common.base.entity.BaseEntity;
 import com.ehs.common.base.service.BaseCommonService;
-import com.ehs.common.base.startup.service.InitDataService;
+import com.ehs.common.base.service.InitDataService;
 
 @Service
 public class InitDataServiceImpl implements InitDataService {

@@ -9,12 +9,15 @@ package com.ehs.common.base.startup;
  */
 
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.persistence.Transient;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,7 +33,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import com.ehs.common.base.entity.BaseEntity;
-import com.ehs.common.base.startup.service.InitDataService;
+import com.ehs.common.base.service.InitDataService;
 
 
 /**   
@@ -111,18 +114,26 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 				Iterator<Attribute> itas = element.attributeIterator();
 				while (itas.hasNext()) {
 					Attribute attribute = itas.next();
-						// 得到类中的所有属性集合
-					Method[] methods = baseEntity.getClass().getMethods();
-					for(Method oMethod:methods) {
-						if(oMethod.getName().equalsIgnoreCase("set"+attribute.getName())) {
-							if(StringUtils.equals(oMethod.getParameterTypes()[0].getTypeName(), Integer.class.getName())) {
-								oMethod.invoke(baseEntity, Integer.parseInt(attribute.getText()));
-							}else {
-								oMethod.invoke(baseEntity, attribute.getText());
-							}
-								
-						}
-					}
+					Class ss=baseEntity.getClass();
+					 Field[] fields=ss.getDeclaredFields();  
+				        for(int i=0;i<fields.length;i++){  
+				        	Field field=fields[i];
+				        	if((!field.isAnnotationPresent(Transient.class))&&(!Modifier.isStatic(field.getModifiers()))&&!Modifier.isFinal(field.getModifiers())) {
+				        		field.setAccessible(true);
+				        		if(StringUtils.equals(field.getName(), attribute.getName())) {
+				        			if(StringUtils.equals(Boolean.class.getName(), field.getType().getName())) {
+				        				field.setBoolean(baseEntity, Boolean.valueOf(attribute.getText()));
+				        			}else if(StringUtils.equals(Integer.class.getName(), field.getType().getName())){
+				        				field.setInt(baseEntity, Integer.parseInt(attribute.getText()));
+				        			}else {
+				        				field.set(baseEntity, attribute.getText());
+				        			}
+				        		}
+				        		
+				        	}
+
+				        }  
+
 				}
 				baseEntityList.add(baseEntity);
 			}
