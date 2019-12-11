@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.ehs.common.auth.bean.LoginInfoBean;
 import com.ehs.common.auth.entity.SysUser;
+import com.ehs.common.auth.interfaces.RequestAuth;
 import com.ehs.common.auth.service.LoginService;
 import com.ehs.common.auth.utils.SessionBean;
 import com.ehs.common.base.utils.BaseUtils;
@@ -40,7 +41,7 @@ import com.ehs.common.oper.bean.ResultBean;
  *        qjj v1.0.0 修改原因
  */
 @RestController
-public class loginController {
+public class LoginController {
 	
 	@Resource
 	private LoginService loginService;
@@ -101,8 +102,8 @@ public class loginController {
 	*---------------------------------------------------------*
 	* 2019年12月11日     qjj        v1.0.0            修改原因
 	 */
+	@RequestAuth(menuKeys ={"*"})
 	@RequestMapping(value = "/auth/login/doLogout")
-	@ResponseBody
 	public String doLogout(HttpServletRequest request, HttpServletResponse response) {
 		sessionBean.logout(request);
 		//LoginResultBean loginResultBean=new LoginResultBean();
