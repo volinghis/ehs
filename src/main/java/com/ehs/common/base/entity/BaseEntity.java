@@ -307,7 +307,6 @@ public  abstract class BaseEntity implements java.io.Serializable{
 		Timestamp _ts=com.ehs.common.base.utils.BaseUtils.getNow();
 		this.setCreationTime(_ts);
 		this.setOwnerCreationTime(_ts);
-		this.setVersionId(DataConfig.VERSION_EFFECTIVE);
 		this.setDataModel(DataModel.CREATE);
 		if(StringUtils.isBlank(this.getKey())){
 			this.setKey(UUID.randomUUID().toString());

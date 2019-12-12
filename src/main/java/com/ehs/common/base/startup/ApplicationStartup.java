@@ -31,9 +31,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Component;
 
+import com.ehs.common.base.config.RedisCacheConfig;
 import com.ehs.common.base.entity.BaseEntity;
+import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.service.InitDataService;
 
 
@@ -59,6 +62,11 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 	@Resource
 	private InitDataService initDataService;
 	
+	@Resource
+	private RedisCacheManager redisCacheManager;
+	
+	@Resource
+	private BaseCommonService baseCommonService;
 	
 	private void initResource() {
 		try {
@@ -111,7 +119,13 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 		while (itsIterator.hasNext()) {
 			Element element = itsIterator.next();
 			if(StringUtils.isNotBlank(targetClass)&&element.attribute("targetClass")==null) {
+				String key=element.attribute("key").getText();
+				redisCacheManager.getCache(RedisCacheConfig.CACHE_NAME).evict(key);
 				BaseEntity baseEntity = (BaseEntity) Class.forName(targetClass).getConstructor().newInstance();
+				BaseEntity tempEntity=baseCommonService.findByKey(baseEntity.getClass(), key);
+				if(tempEntity!=null) {
+					baseEntity=tempEntity;
+				}
 				Iterator<Attribute> itas = element.attributeIterator();
 				while (itas.hasNext()) {
 					Attribute attribute = itas.next();

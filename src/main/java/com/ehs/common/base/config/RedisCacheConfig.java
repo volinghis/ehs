@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -21,6 +20,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 public class RedisCacheConfig extends CachingConfigurerSupport {
 
+	public static final String CACHE_NAME="defaultCache";
 
     private static Logger logger = LoggerFactory.getLogger(RedisCacheConfig.class);
  
@@ -54,12 +54,10 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(valueSerializer()))
                 // 不缓存null值
                 .disableCachingNullValues();
-
         RedisCacheManager redisCacheManager = RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(config)
                 .transactionAware()
                 .build();
-
         logger.info("自定义RedisCacheManager加载完成");
         return redisCacheManager;
     }

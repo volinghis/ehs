@@ -9,12 +9,16 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ehs.common.auth.entity.SysMenu;
 import com.ehs.common.base.config.DataConfig;
+import com.ehs.common.base.config.RedisCacheConfig;
 import com.ehs.common.base.entity.BaseEntity;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.service.InitDataService;
@@ -28,6 +32,9 @@ public class InitDataServiceImpl implements InitDataService {
 	@Resource
 	private BaseCommonService baseCommonService;
 	
+	@Resource
+	private RedisCacheManager redisCacheManager;
+	
 	@Transactional
 	@Override
 	public void initData(List<BaseEntity> baseEntities) {
@@ -39,7 +46,6 @@ public class InitDataServiceImpl implements InitDataService {
 				baseCommonService.saveOrUpdate(baseEntity);
 			}else {
 				if(DataConfig.DATA_UPDATED==baseEntity.equals(entity)) {
-					baseCommonService.deleteByKey(entity.getClass(),entity.getKey());
 					baseCommonService.saveOrUpdate(baseEntity);
 				}
 			}

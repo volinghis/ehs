@@ -11,16 +11,10 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class DataConfig {
 
-	/**
-	 * 版本有效值
-	 */
-	public static final long VERSION_EFFECTIVE=0l;
-	/**
-	 * 版本失效值
-	 */
-	public static final long VERSION_EXPIRE=1l;
+
+
 	
-	public static final String TABLE_HIS_SUFFIX="His";
+	public static final String ENTITY_HIS_SUFFIX="His";
 	
 	public static final String TABLE_UNIQUE_KEY="DATA_KEY";
 	

@@ -19,18 +19,21 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ehs.common.base.config.DataConfig;
+import com.ehs.common.base.config.RedisCacheConfig;
 import com.ehs.common.base.dao.BaseCommonDao;
 import com.ehs.common.base.data.DataModel;
 import com.ehs.common.base.entity.BaseEntity;
 import com.ehs.common.base.service.BaseCommonService;
+import com.ehs.common.base.utils.JsonUtils;
 
 /**
  * Copyright: Copyright (c) 2019 西安东恒鑫源软件开发有限公司
@@ -49,13 +52,17 @@ import com.ehs.common.base.service.BaseCommonService;
 @Service
 public class BaseCommonServiceImpl implements BaseCommonService {
 
+	private static final Logger logger = LoggerFactory.getLogger(BaseCommonServiceImpl.class);
+
+	
 	@Resource
 	private BaseCommonDao baseCommonDao;
 
 	@Transactional
 	@Override
-	@CacheEvict(value = "defaultCache", key = "#t.key")
+	@CacheEvict(value = RedisCacheConfig.CACHE_NAME, key = "#t.key")
 	public <T extends BaseEntity> T saveOrUpdate(T t) {
+		logger.debug("saveOrUpdate:"+JsonUtils.toJsonString(t));
 		Assert.notNull(t, "需要操作的实例不能为空");
 		T old = null;
 		if (StringUtils.isNotBlank(t.getKey())) {
@@ -93,13 +100,9 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 			if (old.getDataModel() == DataModel.REMOVE) {
 				throw new RuntimeException("错误的尝试更新一个已经被删除的实例");
 			}
-			if (!StringUtils.equals(t.getId(), old.getId())) {
-				throw new RuntimeException("错误的尝试更新一个无法定位的实例");
-			}
 			T his = null;
 			try {
-				his = (T) Class.forName(old.getClass().getName() + DataConfig.TABLE_HIS_SUFFIX).getConstructor()
-						.newInstance();
+				his = (T) Class.forName(old.getClass().getName() + DataConfig.ENTITY_HIS_SUFFIX).getConstructor().newInstance();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -115,8 +118,9 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 
 	@Transactional
 	@Override
-	@CacheEvict(value = "defaultCache", key = "#key")
+	@CacheEvict(value = RedisCacheConfig.CACHE_NAME, key = "#key")
 	public <T extends BaseEntity> T deleteByKey(Class<T> tc, String key) {
+		logger.debug("deleteByKey:Class="+tc.getName()+",key="+key);
 		T t = findByKey(tc, key);
 		Assert.notNull(t, "将要删除的实例不存在");
 		if (DataModel.REMOVE.equals(t.getDataModel())) {
@@ -124,7 +128,7 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 		}
 		T t1 = null;
 		try {
-			t1 = (T) Class.forName(t.getClass().getName() + DataConfig.TABLE_HIS_SUFFIX).getConstructor().newInstance();
+			t1 = (T) Class.forName(t.getClass().getName() + DataConfig.ENTITY_HIS_SUFFIX).getConstructor().newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -137,8 +141,10 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 	}
 
 	@Override
-	@Cacheable(value = "defaultCache", key = "#key", unless = "#result == null")
+	@Cacheable(value = RedisCacheConfig.CACHE_NAME, key = "#key", unless = "#result == null")
 	public <T extends BaseEntity> T findByKey(Class<T> t, String key) {
+		logger.debug("findByKey:Class="+t.getName()+",key="+key);
+
 		StringBuilder builder = new StringBuilder(" select be from  ");
 		builder.append(t.getSimpleName());
 		builder.append(" be where be.");
@@ -158,6 +164,7 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 
 	@Override
 	public List<?> findAll(Class<? extends BaseEntity> clazz) {
+		logger.debug("findAll:Class="+clazz.getName());
 		StringBuilder builder = new StringBuilder(" select be from  ");
 		builder.append(clazz.getSimpleName());
 		builder.append(" be where be.");
