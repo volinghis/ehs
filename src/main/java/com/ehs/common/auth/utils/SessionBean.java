@@ -95,14 +95,14 @@ public class SessionBean {
 			}
 			SysUser su=baseCommonService.findByKey(SysUser.class, sessionSysUserKey);
 			String roleKeys=su.getRoleKeys();
-//			if(StringUtils.isNotBlank(roleKeys)) {
-//				String[] roleKeyArr=StringUtils.split(roleKeys,",");
-//				for(String s: roleKeyArr) {
-//					if(StringUtils.equals(s, AuthConstants.ADMIN_ROLE_KEY)) {
-//						return AuthConstants.VALID_OK_CODE;
-//					}
-//				}
-//			}
+			if(StringUtils.isNotBlank(roleKeys)) {
+				String[] roleKeyArr=StringUtils.split(roleKeys,",");
+				for(String s: roleKeyArr) {
+					if(StringUtils.equals(s, AuthConstants.ADMIN_ROLE_KEY)) {
+						return AuthConstants.VALID_OK_CODE;
+					}
+				}
+			}
 			
 			String[] menuKeys = ra.menuKeys();
 			for (String s : menuKeys) {
