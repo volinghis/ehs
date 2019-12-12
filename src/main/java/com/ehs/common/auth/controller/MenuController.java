@@ -56,7 +56,7 @@ public class MenuController {
 	*---------------------------------------------------------*
 	* 2019年12月11日     zhaol           v1.0.0               修改原因
 	 */
-	@RequestAuth(menuKeys ={"*"})
+	@RequestAuth(menuKeys ={".*"})
 	@RequestMapping(value = "/auth/menu/menuDatas")
 	@ResponseBody
 	public String getMenu(HttpServletRequest request,HttpServletResponse response) {
