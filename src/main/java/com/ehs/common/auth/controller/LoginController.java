@@ -21,6 +21,7 @@ import com.ehs.common.auth.config.AuthConstants;
 import com.ehs.common.auth.dao.LoginDao;
 import com.ehs.common.auth.entity.SysUser;
 import com.ehs.common.auth.interfaces.RequestAuth;
+import com.ehs.common.auth.service.LoginService;
 import com.ehs.common.auth.utils.SessionBean;
 import com.ehs.common.base.utils.BaseUtils;
 import com.ehs.common.base.utils.JsonUtils;
@@ -44,7 +45,7 @@ import com.ehs.common.oper.bean.ResultBean;
 public class LoginController {
 	
 	@Resource
-	private LoginDao loginDao;
+	private LoginService loginService;
 	
 	@Resource
 	private SessionBean sessionBean;
@@ -69,7 +70,7 @@ public class LoginController {
 	@RequestMapping(value = "/auth/login/doLogin")
 	public String doLogin(@RequestBody LoginInfoBean loginInfo, HttpServletRequest request) {
 		String account=loginInfo.getAccount();
-		SysUser sysUser=loginDao.findByAccount(account);
+		SysUser sysUser=loginService.findByAccount(account);
 		//LoginResultBean loginResultBean=new LoginResultBean();
 		ResultBean resultBean=new ResultBean();
 		if(sysUser==null) {
