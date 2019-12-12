@@ -121,6 +121,7 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 			if(StringUtils.isNotBlank(targetClass)&&element.attribute("targetClass")==null) {
 				String key=element.attribute("key").getText();
 				BaseEntity baseEntity = (BaseEntity) Class.forName(targetClass).getConstructor().newInstance();
+				redisCacheManager.getCache(RedisCacheConfig.CACHE_NAME).evict(key);
 				BaseEntity tempEntity=baseCommonService.findByKey(baseEntity.getClass(), key);
 				if(tempEntity==null) {
 					Iterator<Attribute> itas = element.attributeIterator();
