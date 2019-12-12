@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehs.common.auth.bean.MenuNode;
+import com.ehs.common.auth.config.AuthConstants;
 import com.ehs.common.auth.entity.entitysuper.SysMenu;
 import com.ehs.common.auth.interfaces.RequestAuth;
 import com.ehs.common.base.service.BaseCommonService;
@@ -56,7 +57,7 @@ public class MenuController {
 	*---------------------------------------------------------*
 	* 2019年12月11日     zhaol           v1.0.0               修改原因
 	 */
-	@RequestAuth(menuKeys ={".*"})
+	@RequestAuth(menuKeys ={AuthConstants.GLOBAL_MENU_KEY})
 	@RequestMapping(value = "/auth/menu/menuDatas")
 	@ResponseBody
 	public String getMenu(HttpServletRequest request,HttpServletResponse response) {
