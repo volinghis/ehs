@@ -15,12 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.ehs.common.auth.bean.LoginInfoBean;
+import com.ehs.common.auth.dao.LoginDao;
 import com.ehs.common.auth.entity.SysUser;
 import com.ehs.common.auth.interfaces.RequestAuth;
-import com.ehs.common.auth.service.LoginService;
 import com.ehs.common.auth.utils.SessionBean;
 import com.ehs.common.base.utils.BaseUtils;
 import com.ehs.common.base.utils.JsonUtils;
@@ -44,7 +43,7 @@ import com.ehs.common.oper.bean.ResultBean;
 public class LoginController {
 	
 	@Resource
-	private LoginService loginService;
+	private LoginDao loginDao;
 	
 	@Resource
 	private SessionBean sessionBean;
@@ -68,7 +67,8 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/auth/login/doLogin")
 	public String doLogin(@RequestBody LoginInfoBean loginInfo, HttpServletRequest request) {
-		SysUser sysUser=loginService.login(loginInfo.getAccount());
+		SysUser sysUser=loginDao.login(loginInfo.getAccount());
+		System.out.println(JsonUtils.toJsonString(sysUser));
 		//LoginResultBean loginResultBean=new LoginResultBean();
 		ResultBean resultBean=new ResultBean();
 		if(sysUser==null) {
@@ -77,8 +77,8 @@ public class LoginController {
 		if(!StringUtils.equals(BaseUtils.string2MD5(loginInfo.getAccount()+loginInfo.getPassword()), sysUser.getPassword())) {
 			return JsonUtils.toJsonString(resultBean.error("密码错误"));
 		}
-		if(sysUser.getState()==1) {
-			return JsonUtils.toJsonString(resultBean.error("用户已被锁定"));
+		if (sysUser.getState()!=null&&sysUser.getState()==1) {
+				return JsonUtils.toJsonString(resultBean.error("用户已被锁定"));
 		}
 		sessionBean.login(sysUser.getKey(), request);
 		return JsonUtils.toJsonString(resultBean.ok("认证成功"));
