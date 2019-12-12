@@ -40,16 +40,7 @@ public class InitDataServiceImpl implements InitDataService {
 	public void initData(List<BaseEntity> baseEntities) {
 		Assert.notNull(baseEntities, "list for baseEntities is required");
 		for (BaseEntity baseEntity : baseEntities) {
-			String key =baseEntity.getKey();
-			BaseEntity entity = baseCommonService.findByKey(baseEntity.getClass(), key);
-			if(entity == null) {
-				baseCommonService.saveOrUpdate(baseEntity);
-			}else {
-				if(DataConfig.DATA_UPDATED==baseEntity.equals(entity)) {
-					baseCommonService.saveOrUpdate(baseEntity);
-				}
-			}
-			
+			baseCommonService.saveOrUpdate(baseEntity);
 		}
 
 	}

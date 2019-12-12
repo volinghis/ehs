@@ -122,39 +122,37 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 				String key=element.attribute("key").getText();
 				BaseEntity baseEntity = (BaseEntity) Class.forName(targetClass).getConstructor().newInstance();
 				BaseEntity tempEntity=baseCommonService.findByKey(baseEntity.getClass(), key);
-				if(tempEntity!=null) {
-					baseEntity=tempEntity;
+				if(tempEntity==null) {
+					Iterator<Attribute> itas = element.attributeIterator();
+					while (itas.hasNext()) {
+						Attribute attribute = itas.next();
+						 List<Field> fieldList = new ArrayList<>() ;
+						 Class tempClass =baseEntity.getClass();
+						 while (tempClass != null) {//当父类为null的时候说明到达了最上层的父类(Object类).
+						       fieldList.addAll(Arrays.asList(tempClass .getDeclaredFields()));
+						       tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
+						 }
+					        for(int i=0;i<fieldList.size();i++){  
+					        	Field field=fieldList.get(i);
+					        	if((!field.isAnnotationPresent(Transient.class))&&(!Modifier.isStatic(field.getModifiers()))&&!Modifier.isFinal(field.getModifiers())) {
+					        		field.setAccessible(true);
+					        		if(StringUtils.equals(field.getName(), attribute.getName())) {
+					        			if(StringUtils.equals(Boolean.class.getName(), field.getType().getName())) {
+					        				field.set(baseEntity, Boolean.valueOf(attribute.getText()));
+					        			}else if(StringUtils.equals(Integer.class.getName(), field.getType().getName())){
+					        				field.set(baseEntity, Integer.valueOf(attribute.getText()));
+					        			}else {
+					        				field.set(baseEntity, attribute.getText());
+					        			}
+					        		}
+					        		
+					        	}
+	
+					        }  
+	
+					}
+					baseEntityList.add(baseEntity);
 				}
-				Iterator<Attribute> itas = element.attributeIterator();
-				while (itas.hasNext()) {
-					Attribute attribute = itas.next();
-					 
-					 List<Field> fieldList = new ArrayList<>() ;
-					 Class tempClass =baseEntity.getClass();
-					 while (tempClass != null) {//当父类为null的时候说明到达了最上层的父类(Object类).
-					       fieldList.addAll(Arrays.asList(tempClass .getDeclaredFields()));
-					       tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
-					 }
-				        for(int i=0;i<fieldList.size();i++){  
-				        	Field field=fieldList.get(i);
-				        	if((!field.isAnnotationPresent(Transient.class))&&(!Modifier.isStatic(field.getModifiers()))&&!Modifier.isFinal(field.getModifiers())) {
-				        		field.setAccessible(true);
-				        		if(StringUtils.equals(field.getName(), attribute.getName())) {
-				        			if(StringUtils.equals(Boolean.class.getName(), field.getType().getName())) {
-				        				field.set(baseEntity, Boolean.valueOf(attribute.getText()));
-				        			}else if(StringUtils.equals(Integer.class.getName(), field.getType().getName())){
-				        				field.set(baseEntity, Integer.valueOf(attribute.getText()));
-				        			}else {
-				        				field.set(baseEntity, attribute.getText());
-				        			}
-				        		}
-				        		
-				        	}
-
-				        }  
-
-				}
-				baseEntityList.add(baseEntity);
 			}
 			if(element.attribute("targetClass")!=null) {
 				targetClass=element.attributeValue("targetClass").toString();
