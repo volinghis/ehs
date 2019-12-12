@@ -1,42 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-<!-- 	<roles targetClass="com.ehs.common.auth.entity.SysRole">
+ 	<roles targetClass="com.ehs.common.auth.entity.SysRole">
 		<role dataCode="sysAdmin" key="sysAdminRoleKey" name="管理员" remark="管理员"/>
 	</roles>
 	
 	<users targetClass="com.ehs.common.auth.entity.SysUser">
-		<user key="adminKey" account="admin" password="a66abb5684c45962d887564f08346e8d" roles="{'roleType':'ROLE','roleKey':'sysAdminRoleKey'}" />	
+		<user key="adminKey" account="admin" password="a66abb5684c45962d887564f08346e8d" roleKeys="sysAdminRoleKey" />	
 	</users>
 	
 	<orgs targetClass="com.ehs.common.organization.entity.OrganizationInfo">
 		<org dataCode="rootOrg" key="rootOrg" name="大唐韩城第二发电厂有限公司" >
 		
 		</org>
-	</orgs> -->
+	</orgs> 
 	
 	<menus targetClass="com.ehs.common.auth.entity.SysMenu">
-		<menu dataCode="home" key="home" name="首页" url="/layout/content/portal" icon="fa-home" leaf="0" sort="1"></menu>
-		<!-- <menu dataCode="eamManager" key="2" name="设备管理" url="" icon="fa-cogs" leaf="false" business="false" sort="2">
-			<menu dataCode="ledgerManager" key="21" name="设备台账" url="/eam/eamAccountPrint/index" icon="fa-hdd-o" parentKey="eamManager" sort="21" leaf="true" business="false"></menu>
-			<menu dataCode="eamEdit" key="211" name="设备编辑" url="/eam/eamAccountPrint/edit" icon="fa-hdd-o" parentKey="eamManager" sort="211" leaf="true" business="true"></menu>
-			<menu dataCode="ledgerManager" key="212" name="设备详情" url="/eam/eamAccountPrint/details" icon="fa-hdd-o" parentKey="eamManager" sort="212" leaf="true" business="true"></menu>
-			<menu dataCode="ledgerManager" key="22" name="设备报废" url="/eam/eamAccountPrint/index" icon="fa-hdd-o" parentKey="eamManager" leaf="true" business="false" sort="22"></menu>
-			<menu dataCode="ledgerManager" key="23" name="设备变卖" url="/eam/eamAccountPrint/index" icon="fa-hdd-o" parentKey="eamManager" leaf="true" business="false" sort="23"></menu>
-			<menu dataCode="ledgerManager" key="24" name="设备转移" url="/eam/eamAccountPrint/index" icon="fa-hdd-o" parentKey="eamManager" leaf="true" business="false" sort="24"></menu>
-			<menu dataCode="ledgerManager" key="25" name="设备折价" url="/eam/eamAccountPrint/index" icon="fa-hdd-o" parentKey="eamManager" leaf="true" business="false" sort="25"></menu>
+		
+		<menu dataCode="systemManager" key="4" name="系统管理" url="" icon="fa-cog" leaf="false"  sort="9999">
+			<menu dataCode="userManager" key="40" name="人员管理" url="/system/userManager/user/index" icon="fa-user"  parentKey="systemManager"  sort="40"></menu>
+			<menu dataCode="userCenter" key="41" name="个人中心" url="/system/account/center/index" icon="fa-user"  parentKey="systemManager"  sort="41"></menu>
+			<menu dataCode="useretting" key="42" name="个人设置" url="/system/account/setting/index" icon="fa-user"  parentKey="systemManager"  sort="42"></menu>
+			<menu dataCode="roleManager" key="43" name="角色管理" url="/system/roleManager/index" icon="fa-user"  parentKey="systemManager"  sort="43"></menu>
+			<menu dataCode="menuManager" key="44" name="菜单授权" url="/system/menuManager/index" icon="fa-user"  parentKey="systemManager"  sort="44"></menu>
 		</menu>
-		<menu dataCode="eamPartLibraryManager" key="3" name="备件管理" url="" icon="fa-ticket"  leaf="false" business="false" sort="3">
-			<menu dataCode="eamPartManager" key="31" name="备件台账" url="/eam/eamPartLibrary/index" icon="fa-ticket" parentKey="eamPartLibraryManager" leaf="true" business="false" sort="31"></menu>
-			<menu dataCode="enterWareHouse" key="32" name="入库管理" url="/eam/eamPartLibrary/index" icon="fa-ticket" parentKey="eamPartLibraryManager" leaf="true" business="false" sort="32"></menu>
-			<menu dataCode="applyForUse" key="33" name="领用申请" url="/eam/eamPartLibrary/index" icon="fa-ticket" parentKey="eamPartLibraryManager" leaf="true" business="false" sort="33"></menu>
-			<menu dataCode="outWareHouse" key="34" name="出库管理" url="/eam/eamPartLibrary/index" icon="fa-ticket" parentKey="eamPartLibraryManager" leaf="true" business="false" sort="34"></menu>
-		</menu>
-		<menu dataCode="systemManager" key="4" name="系统管理" url="" icon="fa-cog" leaf="false" business="false" sort="4">
-			<menu dataCode="userManager" key="40" name="人员管理" url="/system/userManager/user/index" icon="fa-user" leaf="true" parentKey="systemManager" business="false" sort="40"></menu>
-			<menu dataCode="userCenter" key="41" name="个人中心" url="/system/account/center/index" icon="fa-user" leaf="true" parentKey="systemManager" business="false" sort="41"></menu>
-			<menu dataCode="useretting" key="42" name="个人设置" url="/system/account/setting/index" icon="fa-user" leaf="true" parentKey="systemManager" business="false" sort="42"></menu>
-			<menu dataCode="roleManager" key="43" name="角色管理" url="/system/roleManager/index" icon="fa-user" leaf="true" parentKey="systemManager" business="false" sort="43"></menu>
-			<menu dataCode="menuManager" key="44" name="菜单授权" url="/system/menuManager/index" icon="fa-user" leaf="true" parentKey="systemManager" business="false" sort="44"></menu>
-		</menu> -->
 	</menus>
 </root>

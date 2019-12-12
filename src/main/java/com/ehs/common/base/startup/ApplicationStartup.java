@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -114,17 +115,22 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 				Iterator<Attribute> itas = element.attributeIterator();
 				while (itas.hasNext()) {
 					Attribute attribute = itas.next();
-					Class ss=baseEntity.getClass();
-					 Field[] fields=ss.getDeclaredFields();  
-				        for(int i=0;i<fields.length;i++){  
-				        	Field field=fields[i];
+					 
+					 List<Field> fieldList = new ArrayList<>() ;
+					 Class tempClass =baseEntity.getClass();
+					 while (tempClass != null) {//当父类为null的时候说明到达了最上层的父类(Object类).
+					       fieldList.addAll(Arrays.asList(tempClass .getDeclaredFields()));
+					       tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
+					 }
+				        for(int i=0;i<fieldList.size();i++){  
+				        	Field field=fieldList.get(i);
 				        	if((!field.isAnnotationPresent(Transient.class))&&(!Modifier.isStatic(field.getModifiers()))&&!Modifier.isFinal(field.getModifiers())) {
 				        		field.setAccessible(true);
 				        		if(StringUtils.equals(field.getName(), attribute.getName())) {
 				        			if(StringUtils.equals(Boolean.class.getName(), field.getType().getName())) {
-				        				field.setBoolean(baseEntity, Boolean.valueOf(attribute.getText()));
+				        				field.set(baseEntity, Boolean.valueOf(attribute.getText()));
 				        			}else if(StringUtils.equals(Integer.class.getName(), field.getType().getName())){
-				        				field.setInt(baseEntity, Integer.parseInt(attribute.getText()));
+				        				field.set(baseEntity, Integer.valueOf(attribute.getText()));
 				        			}else {
 				        				field.set(baseEntity, attribute.getText());
 				        			}
