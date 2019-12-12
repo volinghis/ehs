@@ -80,33 +80,36 @@ public class SessionBean {
 					.getAttribute(AuthConstants.SESSION_SYSUSER_KEY);
 
 			if (StringUtils.isBlank(sessionSysUserKey)) {
-				logger.error(BaseUtils.getIpAddress(httpRequest)+"：进行了未登录请求！");
+				logger.error(BaseUtils.getIpAddress(httpRequest)+"：进行了未登录访问！");
 				return AuthConstants.VALID_NO_USER_CODE;
 			}
 			RequestAuth ra = method.getAnnotation(RequestAuth.class);
 			if (ra == null || ra.menuKeys() == null || ra.menuKeys().length == 0) {
-				logger.error(BaseUtils.getIpAddress(httpRequest)+":被请求方法未进行注册！");
+				logger.error(sessionSysUserKey+":被请求方法未进行注册！");
 				return AuthConstants.VALID_SERVER_ERROR;
 			} 
-			String resoureMenuKey = httpRequest.getParameter("resoureMenuKey");
+			String resoureMenuKey = httpRequest.getParameter(AuthConstants.RESOURE_MENU_KEY);
 			if (StringUtils.isBlank(resoureMenuKey)) {
-				logger.error(BaseUtils.getIpAddress(httpRequest)+":无法识别请求！");
+				logger.error(sessionSysUserKey+":无法识别请求！");
 				return AuthConstants.VALID_CLIENT_ERROR;
 			}
 			SysUser su=baseCommonService.findByKey(SysUser.class, sessionSysUserKey);
 			String roleKeys=su.getRoleKeys();
-			if(StringUtils.isNotBlank(roleKeys)) {
-				String[] roleKeyArr=StringUtils.split(roleKeys,",");
-				for(String s: roleKeyArr) {
-					if(StringUtils.equals(s, AuthConstants.ADMIN_ROLE_KEY)) {
-						return AuthConstants.VALID_OK_CODE;
-					}
-				}
-			}
+//			if(StringUtils.isNotBlank(roleKeys)) {
+//				String[] roleKeyArr=StringUtils.split(roleKeys,",");
+//				for(String s: roleKeyArr) {
+//					if(StringUtils.equals(s, AuthConstants.ADMIN_ROLE_KEY)) {
+//						return AuthConstants.VALID_OK_CODE;
+//					}
+//				}
+//			}
 			
 			String[] menuKeys = ra.menuKeys();
 			for (String s : menuKeys) {
 				if(StringUtils.isNotBlank(s)) {
+					if(StringUtils.equals(".*", s)) {
+						return AuthConstants.VALID_OK_CODE;
+					}
 					Pattern p = Pattern.compile(s);
 					//当前导航可以匹配到
 					if(p.matcher(resoureMenuKey).matches()) {
@@ -149,11 +152,11 @@ public class SessionBean {
 					}
 				}
 			}
+			logger.error(sessionSysUserKey+":没有权限！");
 			return AuthConstants.VALID_NO_AUTH_CODE;
-
-				
 		} catch (Exception e) {
-			return AuthConstants.VALID_NO_USER_CODE;
+			e.printStackTrace();
+			return AuthConstants.VALID_EXCEPTION;
 		}
 
 	}
