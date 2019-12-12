@@ -102,7 +102,7 @@ public class LoginController {
 	*---------------------------------------------------------*
 	* 2019年12月11日     qjj        v1.0.0            修改原因
 	 */
-	@RequestAuth(menuKeys ={"*"})
+	@RequestAuth(menuKeys ={".*"})
 	@RequestMapping(value = "/auth/login/doLogout")
 	public String doLogout(HttpServletRequest request, HttpServletResponse response) {
 		sessionBean.logout(request);
