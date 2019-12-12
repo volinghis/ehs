@@ -10,44 +10,27 @@ package com.ehs.common.base.service.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.persistence.Transient;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.ehs.common.auth.entity.SysUser;
 import com.ehs.common.base.config.DataConfig;
 import com.ehs.common.base.dao.BaseCommonDao;
 import com.ehs.common.base.data.DataModel;
 import com.ehs.common.base.entity.BaseEntity;
 import com.ehs.common.base.service.BaseCommonService;
-import com.ehs.common.base.utils.BaseUtils;
-import com.ehs.common.organization.entity.OrgUser;
-
 
 /**
  * Copyright: Copyright (c) 2019 西安东恒鑫源软件开发有限公司
@@ -78,47 +61,45 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 		if (StringUtils.isNotBlank(t.getKey())) {
 			old = (T) findByKey(t.getClass(), t.getKey());
 		}
-		if(t.getReCompletePoint()) {
-			Class ss=t.getClass();
-			 Field[] fields=ss.getDeclaredFields();  
-		        int fieldCount=0;
-		        int notNullCount=0;
-		        for(int i=0;i<fields.length;i++){  
-		        	Field field=fields[i];
-		        	if((!field.isAnnotationPresent(Transient.class))&&(!Modifier.isStatic(field.getModifiers()))&&!Modifier.isFinal(field.getModifiers())) {
-		        		field.setAccessible(true);
-		        		fieldCount++;
-		        		try {
-		        			if(field.get(t)!=null&&StringUtils.isNotBlank(field.get(t).toString())) {
-		        				notNullCount++;
-			        		}
-						} catch (Exception e) {
-							e.printStackTrace();
+		if (t.getReCompletePoint()) {
+			Class ss = t.getClass();
+			Field[] fields = ss.getDeclaredFields();
+			int fieldCount = 0;
+			int notNullCount = 0;
+			for (int i = 0; i < fields.length; i++) {
+				Field field = fields[i];
+				if ((!field.isAnnotationPresent(Transient.class)) && (!Modifier.isStatic(field.getModifiers()))
+						&& !Modifier.isFinal(field.getModifiers())) {
+					field.setAccessible(true);
+					fieldCount++;
+					try {
+						if (field.get(t) != null && StringUtils.isNotBlank(field.get(t).toString())) {
+							notNullCount++;
 						}
-		        		
-		        	}
-
-		        }  
-		        if(fieldCount!=0) {
-			        t.setCompletePoint(Byte.valueOf(String.valueOf(notNullCount*100/fieldCount)));
-		        }
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			if (fieldCount != 0) {
+				t.setCompletePoint(Byte.valueOf(String.valueOf(notNullCount * 100 / fieldCount)));
+			}
 		}
 		if (old == null) {
 			t.initCreate();
 			t.setId(null);
 			baseCommonDao.save(t);
 		} else {
-			if (old.getDataModel()== DataModel.REMOVE) {
+			if (old.getDataModel() == DataModel.REMOVE) {
 				throw new RuntimeException("错误的尝试更新一个已经被删除的实例");
 			}
-	
 			if (!StringUtils.equals(t.getId(), old.getId())) {
 				throw new RuntimeException("错误的尝试更新一个无法定位的实例");
 			}
 			T his = null;
 			try {
-				his = (T) Class.forName(old.getClass().getName() + DataConfig.TABLE_HIS_SUFFIX)
-						.getConstructor().newInstance();
+				his = (T) Class.forName(old.getClass().getName() + DataConfig.TABLE_HIS_SUFFIX).getConstructor()
+						.newInstance();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -138,15 +119,12 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 	public <T extends BaseEntity> T deleteByKey(Class<T> tc, String key) {
 		T t = findByKey(tc, key);
 		Assert.notNull(t, "将要删除的实例不存在");
-
 		if (DataModel.REMOVE.equals(t.getDataModel())) {
 			throw new RuntimeException("错误的尝试删除一个已经被删除的实例");
 		}
-
 		T t1 = null;
 		try {
-			t1 = (T) Class.forName(t.getClass().getName() + DataConfig.TABLE_HIS_SUFFIX).getConstructor()
-					.newInstance();
+			t1 = (T) Class.forName(t.getClass().getName() + DataConfig.TABLE_HIS_SUFFIX).getConstructor().newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -156,11 +134,10 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 		t.setDataModel(DataModel.REMOVE);
 		baseCommonDao.save(t);
 		return t;
-
 	}
 
 	@Override
-	@Cacheable(value = "defaultCache", key = "#key",unless = "#result == null")
+	@Cacheable(value = "defaultCache", key = "#key", unless = "#result == null")
 	public <T extends BaseEntity> T findByKey(Class<T> t, String key) {
 		StringBuilder builder = new StringBuilder(" select be from  ");
 		builder.append(t.getSimpleName());
@@ -189,7 +166,7 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 		builder.append(BaseEntity.CREATION_TIME);
 		builder.append(" desc");
 		List<Object> params = new LinkedList<Object>();
-		List<DataModel> ll=new LinkedList<DataModel>();
+		List<DataModel> ll = new LinkedList<DataModel>();
 		ll.add(DataModel.CREATE);
 		ll.add(DataModel.UPDATE);
 		params.add(0, ll);
@@ -200,7 +177,5 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 	public Session getSession() {
 		return baseCommonDao.getSession();
 	}
-
-
 
 }

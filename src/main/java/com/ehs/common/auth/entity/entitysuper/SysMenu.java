@@ -1,15 +1,8 @@
 package com.ehs.common.auth.entity.entitysuper;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.ehs.common.base.entity.BaseEntity;
 
@@ -28,6 +21,20 @@ import com.ehs.common.base.entity.BaseEntity;
 *---------------------------------------------------------*
 * 2019年5月13日     zhaol           v1.0.0               修改原因
 */
+/**   
+* Copyright: Copyright (c) 2019 西安东恒鑫源软件开发有限公司
+* @ClassName: SysMenu.java
+* @Description: 该类的功能描述
+*
+* @version: v1.0.0
+* @author: zhaol
+* @date: 2019年12月11日 下午6:36:17 
+*
+* Modification History:
+* Date         Author          Version            Description
+*---------------------------------------------------------*
+* 2019年12月11日     zhaol           v1.0.0               修改原因
+*/
 @MappedSuperclass
 public  abstract  class SysMenu extends BaseEntity {
 
@@ -38,11 +45,10 @@ public  abstract  class SysMenu extends BaseEntity {
 	public static final String SORT="sort";
 	public static final String PARENT_KEY="parentKey";
 	public static final String URL="url";
-	
+	public static final String LEAF="leaf";
+	public static final String BUSINESS="business";
 
 	public static final String ROLES="roles";
-	
-	
 	
 	/**
 	 * 菜单编码
@@ -68,15 +74,23 @@ public  abstract  class SysMenu extends BaseEntity {
 	 */
 	private String url;
 
-	
+	/**
+	 * 菜单图标
+	 */
 	private String icon;
 	
+	/**
+	 * 是否是子节点
+	 */
+	private Boolean leaf = true;
+	
+	/**
+	 * 菜单是否显示
+	 */
+	private Boolean business = false;
 	
 	@Column(length = 4000)
 	private String roles;
-
-	
-	
 
 	public String getRoles() {
 		return roles;
@@ -108,8 +122,6 @@ public  abstract  class SysMenu extends BaseEntity {
 		this.icon = icon;
 	}
 
-
-
 	public String getName() {
 		return name;
 	}
@@ -117,8 +129,6 @@ public  abstract  class SysMenu extends BaseEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	
 
 	/**
 	 * @return the sort
@@ -133,9 +143,6 @@ public  abstract  class SysMenu extends BaseEntity {
 	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
-
-
-	
 
 	public String getParentKey() {
 		return parentKey;
@@ -153,10 +160,19 @@ public  abstract  class SysMenu extends BaseEntity {
 		this.url = url;
 	}
 
+	public Boolean getLeaf() {
+		return leaf;
+	}
 
+	public void setLeaf(Boolean leaf) {
+		this.leaf = leaf;
+	}
 
+	public Boolean getBusiness() {
+		return business;
+	}
 
-
-	
-
+	public void setBusiness(Boolean business) {
+		this.business = business;
+	}
 }

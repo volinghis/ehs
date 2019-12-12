@@ -34,9 +34,6 @@ public class InitDataServiceImpl implements InitDataService {
 		Assert.notNull(baseEntities, "list for baseEntities is required");
 		for (BaseEntity baseEntity : baseEntities) {
 			String key =baseEntity.getKey();
-			System.out.println("=====");
-			System.out.println(key);
-			System.out.println(baseEntity.getClass());
 			BaseEntity entity = baseCommonService.findByKey(baseEntity.getClass(), key);
 			if(entity == null) {
 				baseCommonService.saveOrUpdate(baseEntity);
