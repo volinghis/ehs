@@ -68,8 +68,8 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/auth/login/doLogin")
 	public String doLogin(@RequestBody LoginInfoBean loginInfo, HttpServletRequest request) {
-		SysUser sysUser=loginDao.login(loginInfo.getAccount());
-		System.out.println(JsonUtils.toJsonString(sysUser));
+		String account=loginInfo.getAccount();
+		SysUser sysUser=loginDao.findByAccount(account);
 		//LoginResultBean loginResultBean=new LoginResultBean();
 		ResultBean resultBean=new ResultBean();
 		if(sysUser==null) {

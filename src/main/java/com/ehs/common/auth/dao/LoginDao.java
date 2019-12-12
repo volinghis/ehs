@@ -9,7 +9,6 @@
 package com.ehs.common.auth.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.ehs.common.auth.entity.SysUser;
@@ -31,6 +30,5 @@ import com.ehs.common.auth.entity.SysUser;
 @Repository
 public interface LoginDao  extends JpaRepository<SysUser, String> {
 	
-	@Query(" select su from SysUser su where su."+SysUser.ACCOUNT+" = ?1")
-	public  SysUser login(String account);
+	public  SysUser findByAccount(String account);
 }
