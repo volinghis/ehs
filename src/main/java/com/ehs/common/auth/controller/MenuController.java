@@ -1,4 +1,4 @@
-package com.ehs.common.auth.menuManager.controller;
+package com.ehs.common.auth.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ehs.common.auth.bean.MenuNode;
 import com.ehs.common.auth.entity.entitysuper.SysMenu;
-import com.ehs.common.auth.menuManager.bean.MenuNode;
+import com.ehs.common.auth.interfaces.RequestAuth;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.utils.JsonUtils;
 
@@ -55,6 +56,7 @@ public class MenuController {
 	*---------------------------------------------------------*
 	* 2019年12月11日     zhaol           v1.0.0               修改原因
 	 */
+	@RequestAuth(menuKeys ={"*"})
 	@RequestMapping(value = "/auth/menu/menuDatas")
 	@ResponseBody
 	public String getMenu(HttpServletRequest request,HttpServletResponse response) {

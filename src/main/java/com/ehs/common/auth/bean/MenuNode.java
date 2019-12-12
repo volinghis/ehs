@@ -1,4 +1,4 @@
-package com.ehs.common.auth.menuManager.bean;
+package com.ehs.common.auth.bean;
 
 import java.util.List;
 
