@@ -8,15 +8,7 @@
  */
 package com.ehs.common.organization.entity.entitysuper;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
-
 import com.ehs.common.base.entity.BaseEntity;
 
 /**   
@@ -35,13 +27,15 @@ import com.ehs.common.base.entity.BaseEntity;
 */
 @MappedSuperclass
 public abstract class OrganizationInfo extends BaseEntity {
+	
+	private static final long serialVersionUID = 1L;
+	
 	public static final String DATA_CODE="dataCode";
 	public static final String NAME="name";
 	public static final String REMARK="remark";
 	public static final String PARENT_KEY="parentKey";
-
-	
-	private static final long serialVersionUID = 1L;
+	public static final String IS_EDIT="isEdit";
+	public static final String SORT="sort";
 
 	/**
 	 * 组织编码
@@ -57,41 +51,55 @@ public abstract class OrganizationInfo extends BaseEntity {
 	 * 备注说明
 	 */
 	private String remark;
-	
-	
-	
+
+	/**
+	 * 父类key
+	 */
 	private String parentKey;
 	
-	
-
+	/**
+	 * 排序
+	 */
+	private Integer sort;
 
 	public String getDataCode() {
 		return dataCode;
 	}
+
 	public void setDataCode(String dataCode) {
 		this.dataCode = dataCode;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getRemark() {
 		return remark;
 	}
+
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+
 	public String getParentKey() {
 		return parentKey;
 	}
+
 	public void setParentKey(String parentKey) {
 		this.parentKey = parentKey;
 	}
 
+	public Integer getSort() {
+		return sort;
+	}
 
-
-
-
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+	
 }
