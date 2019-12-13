@@ -1,6 +1,7 @@
 package com.ehs.common.auth.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,11 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehs.common.auth.bean.MenuNode;
+import com.ehs.common.auth.bean.RoleBean;
 import com.ehs.common.auth.config.AuthConstants;
 import com.ehs.common.auth.entity.entitysuper.SysMenu;
+import com.ehs.common.auth.enums.RoleType;
 import com.ehs.common.auth.interfaces.RequestAuth;
+import com.ehs.common.auth.local.SysAccessUser;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.utils.JsonUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**   
 * Copyright: Copyright (c) 2019 西安东恒鑫源软件开发有限公司
@@ -93,23 +98,40 @@ public class MenuController {
 	 */
 	private void createMenuNode(List<MenuNode> menuNodes,List<SysMenu> menus,String parentkey) {
 		menus.stream().filter(s->StringUtils.equals(s.getParentKey(),parentkey)).forEach(c->{
-			MenuNode MenuNode=new MenuNode();
-			MenuNode.setKey(c.getKey());
-			MenuNode.setCode(c.getKey());
-			MenuNode.setLabel(c.getName());
-			MenuNode.setPath(c.getUrl());
-			MenuNode.setComponent(c.getUrl());
-			MenuNode.setIcon(c.getIcon());
-			MenuNode.setBusiness(c.getBusiness());
-			MenuNode.setLeaf(c.getLeaf());
-			List ll=new ArrayList();
-			createMenuNode(ll,menus,c.getDataCode());
-			if(ll.size()>0) {
-				MenuNode.setChildren(ll);
+			boolean isAdd=true;
+			
+			if(StringUtils.isNotBlank(SysAccessUser.get().getRoleKeys())&&Arrays.asList(StringUtils.split(SysAccessUser.get().getRoleKeys(), ",")).contains(AuthConstants.ADMIN_ROLE_KEY)) {
+				isAdd=true;
 			}else {
-				MenuNode.setLeaf(true);
+				if(StringUtils.isNotBlank(c.getRoles())) {
+					List<RoleBean> list= (List<RoleBean>)JsonUtils.parseObject(c.getRoles(), new TypeReference<List<RoleBean>>(){});
+					long fs=list.stream().filter(r->(RoleType.ORG==r.getRoleType()&&StringUtils.equals(r.getRoleKey(), SysAccessUser.get().getOrgKey()))
+							||(RoleType.SYSUSER==r.getRoleType()&&StringUtils.equals(r.getRoleKey(), SysAccessUser.get().getSysUserKey()))
+							||(RoleType.ROLE==r.getRoleType()&&StringUtils.isNotBlank(SysAccessUser.get().getRoleKeys())&&Arrays.asList(StringUtils.split(SysAccessUser.get().getRoleKeys(), ",")).contains(r.getRoleKey()))
+							).count();
+					isAdd=fs>0;
+				}
 			}
-			menuNodes.add(MenuNode);
+
+			if(isAdd) {
+				MenuNode MenuNode=new MenuNode();
+				MenuNode.setKey(c.getKey());
+				MenuNode.setCode(c.getKey());
+				MenuNode.setLabel(c.getName());
+				MenuNode.setPath(c.getUrl());
+				MenuNode.setComponent(c.getUrl());
+				MenuNode.setIcon(c.getIcon());
+				MenuNode.setBusiness(c.getBusiness());
+				MenuNode.setLeaf(c.getLeaf());
+				List ll=new ArrayList();
+				createMenuNode(ll,menus,c.getDataCode());
+				if(ll.size()>0) {
+					MenuNode.setChildren(ll);
+				}else {
+					MenuNode.setLeaf(true);
+				}
+				menuNodes.add(MenuNode);
+			}
 		});
 	}
 }

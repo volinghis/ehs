@@ -11,7 +11,7 @@ public class AuthConstants {
 	 */
 	public static final String NORMAL_ROLE_KEY="normalRoleKey";
 	public static final String RESOURE_MENU_KEY="resoureMenuKey";
-	public static final int MAX_TIME_OUT=1800;
+	public static final int MAX_TIME_OUT=20;
 	public static final String SESSION_SYSUSER_KEY="SESSION_SYSUSER_KEY";
 	public static final String SESSION_USER_KEY="SESSION_USER_KEY";
 	public static final int VALID_OK_CODE=200;

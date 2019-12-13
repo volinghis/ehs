@@ -14,8 +14,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.persistence.Transient;
@@ -28,10 +31,13 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.ehs.common.base.config.RedisCacheConfig;
@@ -62,11 +68,51 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 	@Resource
 	private InitDataService initDataService;
 	
-	@Resource
-	private RedisCacheManager redisCacheManager;
 	
 	@Resource
 	private BaseCommonService baseCommonService;
+	
+	
+	@Resource
+	private RedisTemplate redisTemplate;
+	
+	
+	
+	@Value("${spring.redis.cache.applicaion.model}")
+	private String applicationModel;
+	
+
+	
+	/** 
+	* @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)  
+	* @Function: ApplicationStartup.java
+	* @Description: 该函数的功能描述
+	*
+	* @param:描述1描述
+	* @return：返回结果描述
+	* @throws：异常描述
+	*
+	* @version: v1.0.0
+	* @author: chentm
+	* @date: 2019年5月28日 上午10:07:47 
+	*
+	* Modification History:
+	* Date         Author          Version            Description
+	*---------------------------------------------------------*
+	* 2019年5月28日      chentm           v1.0.0               修改原因
+	*/
+	@Override
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+		if(StringUtils.equalsIgnoreCase(applicationModel, RedisCacheConfig.CACHE_MODEL_PROD)) {
+			logger.info("开始清除缓存数据...,");
+			redisTemplate.getConnectionFactory().getConnection().flushAll();
+			logger.info("结束清除缓存数据");
+		}
+		//初始化数据
+		initResource();
+
+
+	}
 	
 	private void initResource() {
 		try {
@@ -89,31 +135,6 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 		}
 	}
 	
-	/** 
-	* @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)  
-	* @Function: ApplicationStartup.java
-	* @Description: 该函数的功能描述
-	*
-	* @param:描述1描述
-	* @return：返回结果描述
-	* @throws：异常描述
-	*
-	* @version: v1.0.0
-	* @author: chentm
-	* @date: 2019年5月28日 上午10:07:47 
-	*
-	* Modification History:
-	* Date         Author          Version            Description
-	*---------------------------------------------------------*
-	* 2019年5月28日      chentm           v1.0.0               修改原因
-	*/
-	@Override
-	public void onApplicationEvent(ContextRefreshedEvent event) {
-		//初始化数据
-		initResource();
-
-	}
-	
 	private void readElement(List<com.ehs.common.base.entity.BaseEntity> baseEntityList,Element el,String targetClass) throws Exception{
 		Iterator<Element> itsIterator = el.elementIterator();
 		while (itsIterator.hasNext()) {
@@ -121,7 +142,7 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 			if(StringUtils.isNotBlank(targetClass)&&element.attribute("targetClass")==null) {
 				String key=element.attribute("key").getText();
 				BaseEntity baseEntity = (BaseEntity) Class.forName(targetClass).getConstructor().newInstance();
-				redisCacheManager.getCache(RedisCacheConfig.CACHE_NAME).evict(key);
+				
 				BaseEntity tempEntity=baseCommonService.findByKey(baseEntity.getClass(), key);
 				if(tempEntity==null) {
 					Iterator<Attribute> itas = element.attributeIterator();

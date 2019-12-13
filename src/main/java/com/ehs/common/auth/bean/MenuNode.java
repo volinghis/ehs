@@ -48,6 +48,12 @@ public class MenuNode {
 	 * 子节点
 	 */
 	private List<MenuNode> children;
+	
+	
+	
+	
+
+
 
 	public String getCode() {
 		return code;

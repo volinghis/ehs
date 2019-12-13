@@ -21,7 +21,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisCacheConfig extends CachingConfigurerSupport {
 
 	public static final String CACHE_NAME="defaultCache";
-
+	public static final String CACHE_MODEL_PROD="prod";
+	
     private static Logger logger = LoggerFactory.getLogger(RedisCacheConfig.class);
  
 //    /**
@@ -47,7 +48,7 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofSeconds(60)) // 60s缓存失效
+                .entryTtl(Duration.ofDays(180)) // 60s缓存失效
                 // 设置key的序列化方式
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(keySerializer()))
                 // 设置value的序列化方式

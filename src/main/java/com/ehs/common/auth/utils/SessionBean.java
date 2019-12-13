@@ -9,6 +9,7 @@
 package com.ehs.common.auth.utils;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -33,6 +34,8 @@ import com.ehs.common.auth.entity.SysMenu;
 import com.ehs.common.auth.entity.SysUser;
 import com.ehs.common.auth.enums.RoleType;
 import com.ehs.common.auth.interfaces.RequestAuth;
+import com.ehs.common.auth.local.SysAccessUser;
+import com.ehs.common.auth.local.bean.LocalUser;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.utils.BaseUtils;
 import com.ehs.common.base.utils.JsonUtils;
@@ -83,25 +86,22 @@ public class SessionBean {
 				logger.error(BaseUtils.getIpAddress(httpRequest)+"：进行了未登录访问！");
 				return AuthConstants.VALID_NO_USER_CODE;
 			}
+			this.login(sessionSysUserKey, httpRequest);
+			LocalUser lu=new LocalUser();
+			SysAccessUser.set(lu.initBySysUser(sessionSysUserKey));
+			
 			RequestAuth ra = method.getAnnotation(RequestAuth.class);
 			if (ra == null || ra.menuKeys() == null || ra.menuKeys().length == 0) {
-				logger.error(sessionSysUserKey+":被请求方法未进行注册！");
+				logger.error(SysAccessUser.get().getSysUserKey()+":被请求方法未进行注册！");
 				return AuthConstants.VALID_SERVER_ERROR;
 			} 
 			String resoureMenuKey = httpRequest.getParameter(AuthConstants.RESOURE_MENU_KEY);
 			if (StringUtils.isBlank(resoureMenuKey)) {
-				logger.error(sessionSysUserKey+":无法识别请求！");
+				logger.error(SysAccessUser.get().getSysUserKey()+":无法识别请求！");
 				return AuthConstants.VALID_CLIENT_ERROR;
 			}
-			SysUser su=baseCommonService.findByKey(SysUser.class, sessionSysUserKey);
-			String roleKeys=su.getRoleKeys();
-			if(StringUtils.isNotBlank(roleKeys)) {
-				String[] roleKeyArr=StringUtils.split(roleKeys,",");
-				for(String s: roleKeyArr) {
-					if(StringUtils.equals(s, AuthConstants.ADMIN_ROLE_KEY)) {
-						return AuthConstants.VALID_OK_CODE;
-					}
-				}
+			if(StringUtils.isNotBlank(SysAccessUser.get().getRoleKeys())&&Arrays.asList(StringUtils.split(SysAccessUser.get().getRoleKeys(), ",")).contains(AuthConstants.ADMIN_ROLE_KEY)) {
+				return AuthConstants.VALID_OK_CODE;
 			}
 			
 			String[] menuKeys = ra.menuKeys();
@@ -122,37 +122,19 @@ public class SessionBean {
 						List<RoleBean> roleList=(List<RoleBean>)JsonUtils.parseObject(roles, new TypeReference<List<RoleBean>>(){});
 						if(roleList!=null&&!roleList.isEmpty()) {
 							for(RoleBean rb:roleList) {
-								if(RoleType.ROLE.equals(rb.getRoleType())) {
-									if(StringUtils.isNotBlank(roleKeys)) {
-										String[] roleKeyArr=StringUtils.split(roleKeys,",");
-										for(String role: roleKeyArr) {
-											if(StringUtils.equals(role, rb.getRoleKey())) {
-												return AuthConstants.VALID_OK_CODE;
-											}
-										}
-									}
-								}else if(RoleType.ORG.equals(rb.getRoleType())) {
-									String userKey=su.getUserKey();
-									if(StringUtils.isNotBlank(userKey)) {
-										OrgUser ou=baseCommonService.findByKey(OrgUser.class, userKey);
-										if(StringUtils.isNotBlank(ou.getOrgKey())) {
-											OrganizationInfo oi=baseCommonService.findByKey(OrganizationInfo.class, ou.getOrgKey());
-											if(StringUtils.equals(oi.getKey(), rb.getRoleKey())) {
-												return AuthConstants.VALID_OK_CODE;
-											}
-										}
-									}
-								}else if(RoleType.USER.equals(rb.getRoleType())) {
-									if(StringUtils.equals(rb.getRoleKey(), sessionSysUserKey)) {
+								if(RoleType.ROLE.equals(rb.getRoleType())&&StringUtils.isNotBlank(SysAccessUser.get().getRoleKeys())&&Arrays.asList(StringUtils.split(SysAccessUser.get().getRoleKeys(), ",")).contains(rb.getRoleKey())) {
 										return AuthConstants.VALID_OK_CODE;
-									}
+								}else if(RoleType.ORG.equals(rb.getRoleType())&&StringUtils.equals(rb.getRoleKey(),SysAccessUser.get().getOrgKey())) {
+										return AuthConstants.VALID_OK_CODE;
+								}else if(RoleType.SYSUSER.equals(rb.getRoleType())&&StringUtils.equals(rb.getRoleKey(),SysAccessUser.get().getSysUserKey())) {
+										return AuthConstants.VALID_OK_CODE;
 								}
 							}
 						}
 					}
 				}
 			}
-			logger.error(sessionSysUserKey+":没有权限！");
+			logger.error(SysAccessUser.get().getSysUserKey()+":没有权限！");
 			return AuthConstants.VALID_NO_AUTH_CODE;
 		} catch (Exception e) {
 			e.printStackTrace();

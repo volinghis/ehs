@@ -21,27 +21,20 @@ import com.ehs.common.base.utils.SpringUtils;
 
 public class RequestAuthInterceptor implements HandlerInterceptor {
 
-	private static final Logger logger = LoggerFactory.getLogger(RequestAuthInterceptor.class);
 
 	@Override
 	public boolean preHandle(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Object handler)
 			throws Exception {
+		SysAccessUser.remove();
 		SessionBean sessionBean=SpringUtils.getBean(SessionBean.class);
-
 		HandlerMethod handlerMethod = (HandlerMethod) handler;      
 		Method method = handlerMethod.getMethod();   
 		int statusCode=sessionBean.valid(httpRequest,method);
 		if(statusCode!=AuthConstants.VALID_OK_CODE) {
 			httpResponse.setStatus(statusCode);
-		}else {
-		
-			String sysUserKey=sessionBean.getSession(httpRequest);
-			LocalUser lu=new LocalUser();
-			SysAccessUser.set(lu.initBySysUser(sysUserKey));
-			sessionBean.login(sysUserKey, httpRequest);
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 }
