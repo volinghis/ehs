@@ -3,6 +3,7 @@ package com.ehs.common.auth.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -10,18 +11,24 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehs.common.auth.bean.MenuNode;
+import com.ehs.common.auth.bean.MenuRolesBean;
 import com.ehs.common.auth.bean.RoleBean;
 import com.ehs.common.auth.config.AuthConstants;
+import com.ehs.common.auth.entity.SysRole;
 import com.ehs.common.auth.entity.entitysuper.SysMenu;
 import com.ehs.common.auth.enums.RoleType;
 import com.ehs.common.auth.interfaces.RequestAuth;
 import com.ehs.common.auth.local.SysAccessUser;
+import com.ehs.common.auth.service.MenuService;
+import com.ehs.common.auth.service.RoleService;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.utils.JsonUtils;
+import com.ehs.common.oper.bean.ResultBean;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**   
@@ -43,6 +50,13 @@ public class MenuController {
 	
 	@Resource
 	private BaseCommonService baseCommonService;
+	
+	@Resource
+	private MenuService menuService;
+	
+	@Resource
+	private RoleService roleService;
+
 
 	/**
 	 * 
@@ -133,5 +147,71 @@ public class MenuController {
 				menuNodes.add(MenuNode);
 			}
 		});
+	}
+	/**
+	 * 根据菜单获取角色
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	@RequestMapping(value = "/auth/menu/findMenuRoles")
+	@ResponseBody
+	public String findMenuRoles(HttpServletRequest request, HttpServletResponse response) {
+
+		String menuKey=request.getParameter("menuKey");
+		List<SysRole> roles=roleService.findRoleByMenuKey(menuKey);
+		if(roles==null||roles.isEmpty()) {
+			return "[]";
+		}
+		return JsonUtils.toJsonString(roles);
+	}
+	
+	/**
+	 * 获取待选择角色列表
+	 */
+	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	@RequestMapping(value = "/auth/menu/findAllRolesByMenuKey")
+	@ResponseBody
+	public String findAllRolesByMenuKey(HttpServletRequest request, HttpServletResponse response) {
+		List<SysRole> allRoles=(List<SysRole>)baseCommonService.findAll(SysRole.class);
+		if(allRoles==null||allRoles.isEmpty()) {
+			return "[]";
+		}
+		String menuKey=request.getParameter("menuKey");
+		List<SysRole> roles=roleService.findRoleByMenuKey(menuKey);
+
+		if(roles==null||roles.isEmpty()) {
+			List roleList=allRoles.stream().filter(
+					s->(!StringUtils.equals(s.getKey(), "sysAdminRoleKey"))
+					&&(!StringUtils.equals(s.getKey(), "normalRoleKey"))
+					).collect(Collectors.toList());
+			return JsonUtils.toJsonString(roleList);
+		}
+		return JsonUtils.toJsonString(allRoles.stream().filter(
+				s->roles.stream().allMatch(ss->(!StringUtils.equals(s.getKey(), ss.getKey())))
+				&&(!StringUtils.equals(s.getKey(), "sysAdminRoleKey"))
+				&&(!StringUtils.equals(s.getKey(), "normalRoleKey"))
+				).collect(Collectors.toList()));
+	}
+	
+	
+	
+	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	@RequestMapping(value = "/auth/menu/saveMenuRole")
+	@ResponseBody
+	public String saveMenuRole(@RequestBody MenuRolesBean menuRoleBean, HttpServletRequest request, HttpServletResponse response) {
+		ResultBean resultBean=new ResultBean();
+		menuService.saveMenuRole(menuRoleBean);
+		return JsonUtils.toJsonString(resultBean.ok("授权成功！",""));
+	}
+	
+	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	@RequestMapping(value = "/auth/menu/deleteMenuRole")
+	@ResponseBody
+	public String deleteMenuRole(@RequestBody MenuRolesBean menuRoleBean, HttpServletRequest request, HttpServletResponse response) {
+		ResultBean resultBean=new ResultBean();
+		menuService.deleteMenuRole(menuRoleBean);
+		return JsonUtils.toJsonString(resultBean.ok("删除成功！",""));
 	}
 }
