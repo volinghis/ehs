@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.organization.bean.OrganizationBean;
-import com.ehs.common.organization.dao.OrganizationDao;
 import com.ehs.common.organization.entity.OrganizationInfo;
 import com.ehs.common.organization.service.OrganizationService;
 
