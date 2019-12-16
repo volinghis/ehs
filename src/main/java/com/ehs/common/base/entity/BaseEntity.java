@@ -28,6 +28,7 @@ import com.ehs.common.base.data.DataModel;
 import com.ehs.common.base.utils.AccessUtils;
 import com.ehs.common.base.utils.BaseUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 
@@ -49,6 +50,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  *        chentm v1.0.0 无修改
  */
 @MappedSuperclass
+@JsonIgnoreProperties(ignoreUnknown = true)
 public  abstract class BaseEntity implements java.io.Serializable{
 
 	private static final long serialVersionUID = 1L;
