@@ -16,8 +16,8 @@ import com.ehs.common.organization.service.OrganizationService;
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
 
-	@Resource
-	private OrganizationDao organizationDao;
+//	@Resource
+//	private OrganizationDao organizationDao;
 	
 	@Resource
 	private BaseCommonService baseCommonService;
