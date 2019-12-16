@@ -9,8 +9,8 @@
 	</users>
 	
 	<orgs targetClass="com.ehs.common.organization.entity.OrganizationInfo">
-		<org dataCode="rootOrg" key="rootOrg" name="大唐韩城第二发电厂有限公司" >
-		
+		<org dataCode="rootOrg" key="rootOrg" name="大唐韩城第二发电厂有限公司" sort="0">
+			<org dataCode="equipmentDivision" key="equipmentDivision" name="设备部" parentKey="rootOrg" sort="1"></org>
 		</org>
 	</orgs> 
 	
