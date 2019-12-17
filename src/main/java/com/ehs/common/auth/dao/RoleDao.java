@@ -8,8 +8,6 @@
  */
 package com.ehs.common.auth.dao;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 import com.ehs.common.auth.entity.SysRole;
 import com.ehs.common.base.config.DataConfig;
-import com.ehs.common.base.data.DataModel;
 import com.ehs.common.base.entity.BaseEntity;
 
 /**   

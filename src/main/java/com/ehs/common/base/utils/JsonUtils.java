@@ -39,7 +39,7 @@ public class JsonUtils {
 	
 	public static List parseList(String jsonStr, Class targetClass){
 		try {
-			 JavaType jt = JsonUtils.objectMapper.getTypeFactory().constructParametricType(ArrayList.class, targetClass);
+			 JavaType jt = JsonUtils.objectMapper.getTypeFactory().constructParametricType(List.class, targetClass);
 			 return objectMapper.readValue(jsonStr, jt);
 		} catch (Exception e) {
 			// TODO: handle exception

@@ -22,29 +22,27 @@ public class MenuServiceImpl implements MenuService {
 
 	@Resource
 	private BaseCommonService baseCommonService;
-	
-	
-	
+
 	@Transactional
 	@Override
 	public void saveMenuRole(MenuRolesBean menuRolesBean) {
-		List<SysMenu> menus=(List<SysMenu>)baseCommonService.findAll(SysMenu.class);
-		SysMenu sm=baseCommonService.findByKey(SysMenu.class, menuRolesBean.getMenuKey());
-		List<SysMenu> childrenMenus=new ArrayList<SysMenu>();
+		List<SysMenu> menus = (List<SysMenu>) baseCommonService.findAll(SysMenu.class);
+		SysMenu sm = baseCommonService.findByKey(SysMenu.class, menuRolesBean.getMenuKey());
+		List<SysMenu> childrenMenus = new ArrayList<SysMenu>();
 		childrenMenus.add(sm);
 		createChildrenMenu(menus, childrenMenus, sm.getKey());
 //		List<String> menuKeys=  childrenMenus.stream().map(SysMenu::getKey).collect(Collectors.toList());
-		for(SysMenu s: childrenMenus) {
-			List<RoleBean> roleBeans=	JsonUtils.parseList(s.getRoles(),RoleBean.class);
+		for (SysMenu s : childrenMenus) {
+			List<RoleBean> roleBeans = JsonUtils.parseList(s.getRoles(), RoleBean.class);
 			roleBeans.addAll(menuRolesBean.getRoleList());
 			s.setRoles(JsonUtils.toJsonString(roleBeans));
 			baseCommonService.saveOrUpdate(s);
 		}
 	}
 
-	private void createChildrenMenu(List<SysMenu> menus,List<SysMenu> childrenMenus,String parentKey) {
-		menus.forEach(s->{
-			if(StringUtils.equals(s.getParentKey(), parentKey)) {
+	private void createChildrenMenu(List<SysMenu> menus, List<SysMenu> childrenMenus, String parentKey) {
+		menus.forEach(s -> {
+			if (StringUtils.equals(s.getParentKey(), parentKey)) {
 				childrenMenus.add(s);
 				createChildrenMenu(menus, childrenMenus, s.getKey());
 			}
@@ -54,22 +52,20 @@ public class MenuServiceImpl implements MenuService {
 	@Transactional
 	@Override
 	public void deleteMenuRole(MenuRolesBean menuRolesBean) {
-		List<SysMenu> menus=(List<SysMenu>)baseCommonService.findAll(SysMenu.class);
-		SysMenu sm=baseCommonService.findByKey(SysMenu.class, menuRolesBean.getMenuKey());
-		List<SysMenu> childrenMenus=new ArrayList<SysMenu>();
+		List<SysMenu> menus = (List<SysMenu>) baseCommonService.findAll(SysMenu.class);
+		SysMenu sm = baseCommonService.findByKey(SysMenu.class, menuRolesBean.getMenuKey());
+		List<SysMenu> childrenMenus = new ArrayList<SysMenu>();
 		childrenMenus.add(sm);
 		createChildrenMenu(menus, childrenMenus, sm.getKey());
+		List<RoleBean> tempList = menuRolesBean.getRoleList();
 		for (SysMenu sysMenu : childrenMenus) {
-			List<RoleBean> roleBeans=JsonUtils.parseList(sysMenu.getRoles(), RoleBean.class);
-			if (roleBeans.containsAll(menuRolesBean.getRoleList())) {
-				roleBeans.removeAll(menuRolesBean.getRoleList());
+			List<RoleBean> roleBeans = JsonUtils.parseList(sysMenu.getRoles(), RoleBean.class);
+			if (roleBeans.containsAll(tempList)) {
+				roleBeans.removeAll(tempList);
 				sysMenu.setRoles(JsonUtils.toJsonString(roleBeans));
-				System.out.println("============================="+JsonUtils.toJsonString(roleBeans));
 				baseCommonService.saveOrUpdate(sysMenu);
 			}
-			
 		}
 	}
-
 
 }
