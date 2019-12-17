@@ -38,7 +38,7 @@ import com.ehs.common.base.entity.BaseEntity;
 @Repository
 public interface RoleDao extends JpaRepository<SysRole, String> {
 	
-	@Query(" select sr from SysRole sr where sr."+SysRole.DATA_MODEL+"<>'"+DataConfig.DATA_STATE+"' and (sr."+SysRole.DATA_CODE+" like %?1% or sr."+SysRole.NAME+" like %?1% ) order by  "+BaseEntity.CREATION_TIME+" desc")
+	@Query(" select sr from SysRole sr where sr."+SysRole.DATA_MODEL+"<>'"+DataConfig.UNSHOW_DATA_STATE+"' and (sr."+SysRole.DATA_CODE+" like %?1% or sr."+SysRole.NAME+" like %?1% ) order by  "+BaseEntity.CREATION_TIME+" desc")
 	public  Page<SysRole> findRoles(String query, Pageable pageable);
 	
 }

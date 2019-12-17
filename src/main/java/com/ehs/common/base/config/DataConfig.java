@@ -1,7 +1,5 @@
 package com.ehs.common.base.config;
 
-import java.util.concurrent.TimeUnit;
-
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +16,7 @@ public class DataConfig {
 	
 	public static final String TABLE_UNIQUE_KEY="DATA_KEY";
 	
-	public static final String DATA_STATE="REMOVE";
+	public static final String UNSHOW_DATA_STATE="REMOVE";
 	
 	public static final boolean DATA_UPDATED=true;
 	
