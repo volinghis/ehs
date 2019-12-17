@@ -181,14 +181,12 @@ public class MenuController {
 		if(roles==null||roles.isEmpty()) {
 			List<SysRole> roleList=allRoles.stream().filter(
 					s->(!StringUtils.equals(s.getKey(), "sysAdminRoleKey"))
-					&&(!StringUtils.equals(s.getKey(), "normalRoleKey"))
 					).collect(Collectors.toList());
 			return JsonUtils.toJsonString(roleList);
 		}
 		return JsonUtils.toJsonString(allRoles.stream().filter(
-				s->roles.stream().allMatch(ss->(!StringUtils.equals(s.getKey(), ss.getKey())))
-				&&(!StringUtils.equals(s.getKey(), "sysAdminRoleKey"))
-				&&(!StringUtils.equals(s.getKey(), "normalRoleKey"))
+				s->roles.stream().allMatch(ss->(!StringUtils.equals(s.getKey(), ss.getKey()))
+				&&(!StringUtils.equals(s.getKey(), "sysAdminRoleKey")))
 				).collect(Collectors.toList()));
 	}
 	

@@ -31,7 +31,6 @@ public class MenuServiceImpl implements MenuService {
 		List<SysMenu> childrenMenus = new ArrayList<SysMenu>();
 		childrenMenus.add(sm);
 		createChildrenMenu(menus, childrenMenus, sm.getKey());
-//		List<String> menuKeys=  childrenMenus.stream().map(SysMenu::getKey).collect(Collectors.toList());
 		for (SysMenu s : childrenMenus) {
 			List<RoleBean> roleBeans = JsonUtils.parseList(s.getRoles(), RoleBean.class);
 			roleBeans.addAll(menuRolesBean.getRoleList());
