@@ -11,13 +11,11 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.ehs.common.auth.bean.MenuRolesBean;
-import com.ehs.common.auth.dao.MenuRoleDao;
-import com.ehs.common.auth.dao.UserMenuDao;
+import com.ehs.common.auth.bean.RoleBean;
 import com.ehs.common.auth.entity.SysMenu;
-import com.ehs.common.auth.entity.SysRole;
-import com.ehs.common.auth.entity.SysRoleMenu;
 import com.ehs.common.auth.service.MenuService;
 import com.ehs.common.base.service.BaseCommonService;
+import com.ehs.common.base.utils.JsonUtils;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -26,43 +24,21 @@ public class MenuServiceImpl implements MenuService {
 	private BaseCommonService baseCommonService;
 	
 	
-	@Resource
-	private MenuRoleDao menuRoleDao;
-	
-	@Resource
-	private UserMenuDao userMenuDao;
 	
 	@Transactional
 	@Override
-	public void saveMenuRole(MenuRolesBean menuRoleBean) {
+	public void saveMenuRole(MenuRolesBean menuRolesBean) {
 		List<SysMenu> menus=(List<SysMenu>)baseCommonService.findAll(SysMenu.class);
-		SysMenu sm=baseCommonService.findByKey(SysMenu.class, menuRoleBean.getMenuKey());
+		SysMenu sm=baseCommonService.findByKey(SysMenu.class, menuRolesBean.getMenuKey());
 		List<SysMenu> childrenMenus=new ArrayList<SysMenu>();
 		childrenMenus.add(sm);
 		createChildrenMenu(menus, childrenMenus, sm.getKey());
-		List<String> menuKeys=  childrenMenus.stream().map(SysMenu::getKey).collect(Collectors.toList());
-		List<String> roleKeys=  menuRoleBean.getRoleList().stream().map(SysRole::getKey).collect(Collectors.toList());
-		List<SysRoleMenu> srmList= menuRoleDao.find(menuKeys.stream().toArray(String[]::new), roleKeys.stream().toArray(String[]::new));
-		
-		
+//		List<String> menuKeys=  childrenMenus.stream().map(SysMenu::getKey).collect(Collectors.toList());
 		for(SysMenu s: childrenMenus) {
-			for(SysRole ss:menuRoleBean.getRoleList()) {
-				if(srmList!=null&&!srmList.isEmpty()) {
-					long c=srmList.stream().filter(sss->StringUtils.equals(sss.getMenuKey(), s.getKey())&&StringUtils.equals(sss.getRoleKey(), ss.getKey())).count();
-					if(c<=0) {
-						SysRoleMenu srm=new SysRoleMenu();
-						srm.setMenuKey(s.getKey());
-						srm.setRoleKey(ss.getKey());
-						baseCommonService.saveOrUpdate(srm);
-					}
-				}else {
-					SysRoleMenu srm=new SysRoleMenu();
-					srm.setMenuKey(s.getKey());
-					srm.setRoleKey(ss.getKey());
-					baseCommonService.saveOrUpdate(srm);
-				}
-			
-			}
+			List<RoleBean> roleBeans=	JsonUtils.parseList(s.getRoles(),RoleBean.class);
+			roleBeans.addAll(menuRolesBean.getRoleList());
+			s.setRoles(JsonUtils.toJsonString(roleBeans));
+			baseCommonService.saveOrUpdate(s);
 		}
 	}
 
@@ -77,25 +53,23 @@ public class MenuServiceImpl implements MenuService {
 
 	@Transactional
 	@Override
-	public void deleteMenuRole(MenuRolesBean menuRoleBean) {
+	public void deleteMenuRole(MenuRolesBean menuRolesBean) {
 		List<SysMenu> menus=(List<SysMenu>)baseCommonService.findAll(SysMenu.class);
-		SysMenu sm=baseCommonService.findByKey(SysMenu.class, menuRoleBean.getMenuKey());
+		SysMenu sm=baseCommonService.findByKey(SysMenu.class, menuRolesBean.getMenuKey());
 		List<SysMenu> childrenMenus=new ArrayList<SysMenu>();
 		childrenMenus.add(sm);
 		createChildrenMenu(menus, childrenMenus, sm.getKey());
-		List<String> menuKeys=  childrenMenus.stream().map(SysMenu::getKey).collect(Collectors.toList());
-		List<String> roleKeys=  menuRoleBean.getRoleList().stream().map(SysRole::getKey).collect(Collectors.toList());
-		List<SysRoleMenu> srmList= menuRoleDao.find(menuKeys.stream().toArray(String[]::new), roleKeys.stream().toArray(String[]::new));
-		if(srmList!=null&&!srmList.isEmpty()) {
-			srmList.stream().forEach(s->{
-				baseCommonService.deleteByKey(s.getClass(),s.getKey());
-			});
+		for (SysMenu sysMenu : childrenMenus) {
+			List<RoleBean> roleBeans=JsonUtils.parseList(sysMenu.getRoles(), RoleBean.class);
+			if (roleBeans.containsAll(menuRolesBean.getRoleList())) {
+				roleBeans.removeAll(menuRolesBean.getRoleList());
+				sysMenu.setRoles(JsonUtils.toJsonString(roleBeans));
+				System.out.println("============================="+JsonUtils.toJsonString(roleBeans));
+				baseCommonService.saveOrUpdate(sysMenu);
+			}
+			
 		}
 	}
 
-	@Override
-	public List<SysMenu> findSysMenus(String sysUserKey) {
-		return userMenuDao.findMenus(sysUserKey);
-	}
 
 }

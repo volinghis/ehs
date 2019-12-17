@@ -69,7 +69,7 @@ public class RoleController {
 	*---------------------------------------------------------*
 	* 2019年10月8日     qjj        v1.0.0            修改原因
 	 */
-	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	@RequestAuth(menuKeys = {"roleManager"})
 	@RequestMapping(value = "/auth/role/getRoleInfoList")
 	public String getRoleInfoList(@RequestBody(required = false) RoleQueryBean roleQueryBean) {
 	     PageInfoBean pb = roleService.findRoles(roleQueryBean);
@@ -93,7 +93,7 @@ public class RoleController {
 	*---------------------------------------------------------*
 	* 2019年10月8日     qjj        v1.0.0            修改原因
 	 */
-	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	@RequestAuth(menuKeys = {"roleManager"})
 	@RequestMapping(value = "/auth/role/saveRoleInfo")
 	public String saveRoleInfo(@RequestBody SysRole sysRole,HttpServletRequest request) {
 		ResultBean resultBean=new ResultBean();
@@ -124,7 +124,7 @@ public class RoleController {
 	*---------------------------------------------------------*
 	* 2019年10月8日     qjj        v1.0.0            修改原因
 	 */
-	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	@RequestAuth(menuKeys = {"roleManager"})
 	@RequestMapping(value="/auth/role/getRoleInfo")
 	public String getRoleInfo(HttpServletRequest request) {
 		String key=request.getParameter("key");
@@ -148,7 +148,7 @@ public class RoleController {
 	*---------------------------------------------------------*
 	* 2019年10月8日     qjj        v1.0.0            修改原因
 	 */
-	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	@RequestAuth(menuKeys = {"roleManager"})
 	@RequestMapping(value = "/auth/role/deleteRoleInfo")
 	public String deleteRoleInfo(HttpServletRequest request) {
 		ResultBean resultBean=new ResultBean();

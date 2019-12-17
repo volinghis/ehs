@@ -32,5 +32,21 @@ public interface RoleService {
 
 	public PageInfoBean findRoles(RoleQueryBean queryBean);
 	
-	public List<SysRole> findRoleByMenuKey(String menuKey);
+	/**
+	 * 
+	* @Function:findRolesByMenuKey 
+	* @Description: 根据菜单key获取关联角色
+	* @param menuKey
+	* @return
+	* @throws：异常描述
+	* @version: v1.0.0
+	* @author: qjj
+	* @date: 2019年12月16日 下午2:45:29 
+	*
+	* Modification History:
+	* Date        Author        Version      Description
+	*---------------------------------------------------------*
+	* 2019年12月16日     qjj        v1.0.0            修改原因
+	 */
+	public List<SysRole> findRolesByMenuKey(String menuKey);
 }

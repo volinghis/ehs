@@ -17,6 +17,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.ehs.common.auth.entity.SysRole;
+import com.ehs.common.base.config.DataConfig;
 import com.ehs.common.base.data.DataModel;
 import com.ehs.common.base.entity.BaseEntity;
 
@@ -37,10 +38,7 @@ import com.ehs.common.base.entity.BaseEntity;
 @Repository
 public interface RoleDao extends JpaRepository<SysRole, String> {
 	
-	@Query(" select sr from SysRole sr where (sr."+SysRole.DATA_CODE+" like %?1% or sr."+SysRole.NAME+" like %?1% ) order by  "+BaseEntity.CREATION_TIME+" desc")
+	@Query(" select sr from SysRole sr where sr."+SysRole.DATA_MODEL+"<>'"+DataConfig.DATA_STATE+"' and (sr."+SysRole.DATA_CODE+" like %?1% or sr."+SysRole.NAME+" like %?1% ) order by  "+BaseEntity.CREATION_TIME+" desc")
 	public  Page<SysRole> findRoles(String query, Pageable pageable);
 	
-	
-	@Query(" select r from SysRole r,SysRoleMenu srm where srm.roleKey=r.key and srm.menuKey=?1" )
-	public List<SysRole>  findMenuRoles(String menuKey);
 }

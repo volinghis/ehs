@@ -2,13 +2,11 @@ package com.ehs.common.auth.bean;
 
 import java.util.List;
 
-import com.ehs.common.auth.entity.SysRole;
-
 public class MenuRolesBean {
 
 	private String menuKey;
 	
-	private List<SysRole> roleList;
+	private List<RoleBean> roleList;
 
 	public String getMenuKey() {
 		return menuKey;
@@ -18,13 +16,20 @@ public class MenuRolesBean {
 		this.menuKey = menuKey;
 	}
 
-	public List<SysRole> getRoleList() {
+	/**
+	 * @return the roleList
+	 */
+	public List<RoleBean> getRoleList() {
 		return roleList;
 	}
 
-	public void setRoleList(List<SysRole> roleList) {
+	/**
+	 * @param roleList the roleList to set
+	 */
+	public void setRoleList(List<RoleBean> roleList) {
 		this.roleList = roleList;
 	}
+
 	
 	
 	

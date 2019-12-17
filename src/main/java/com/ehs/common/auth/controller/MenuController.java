@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehs.common.auth.bean.MenuNode;
@@ -26,6 +27,7 @@ import com.ehs.common.auth.interfaces.RequestAuth;
 import com.ehs.common.auth.local.SysAccessUser;
 import com.ehs.common.auth.service.MenuService;
 import com.ehs.common.auth.service.RoleService;
+import com.ehs.common.auth.service.impl.MenuServiceImpl;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.utils.JsonUtils;
 import com.ehs.common.oper.bean.ResultBean;
@@ -154,23 +156,19 @@ public class MenuController {
 	 * @param response
 	 * @return
 	 */
-	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	@RequestAuth(menuKeys = {"menuManager"})
 	@RequestMapping(value = "/auth/menu/findMenuRoles")
 	@ResponseBody
 	public String findMenuRoles(HttpServletRequest request, HttpServletResponse response) {
-
 		String menuKey=request.getParameter("menuKey");
-		List<SysRole> roles=roleService.findRoleByMenuKey(menuKey);
-		if(roles==null||roles.isEmpty()) {
-			return "[]";
-		}
-		return JsonUtils.toJsonString(roles);
+		return JsonUtils.toJsonString(roleService.findRolesByMenuKey(menuKey));
 	}
+	
 	
 	/**
 	 * 获取待选择角色列表
 	 */
-	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	@RequestAuth(menuKeys = {"menuManager"})
 	@RequestMapping(value = "/auth/menu/findAllRolesByMenuKey")
 	@ResponseBody
 	public String findAllRolesByMenuKey(HttpServletRequest request, HttpServletResponse response) {
@@ -179,10 +177,9 @@ public class MenuController {
 			return "[]";
 		}
 		String menuKey=request.getParameter("menuKey");
-		List<SysRole> roles=roleService.findRoleByMenuKey(menuKey);
-
+		List<SysRole> roles=roleService.findRolesByMenuKey(menuKey);
 		if(roles==null||roles.isEmpty()) {
-			List roleList=allRoles.stream().filter(
+			List<SysRole> roleList=allRoles.stream().filter(
 					s->(!StringUtils.equals(s.getKey(), "sysAdminRoleKey"))
 					&&(!StringUtils.equals(s.getKey(), "normalRoleKey"))
 					).collect(Collectors.toList());
@@ -196,22 +193,40 @@ public class MenuController {
 	}
 	
 	
-	
-	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	/**
+	 * 
+	* @Function:saveMenuRole 
+	* @Description: 菜单授权
+	* @param roleBean
+	* @param menuKey
+	* @return
+	* @throws：异常描述
+	* @version: v1.0.0
+	* @author: qjj
+	* @date: 2019年12月16日 下午3:23:11 
+	*
+	* Modification History:
+	* Date        Author        Version      Description
+	*---------------------------------------------------------*
+	* 2019年12月16日     qjj        v1.0.0            修改原因
+	 */
+	@RequestAuth(menuKeys = {"menuManager"})
 	@RequestMapping(value = "/auth/menu/saveMenuRole")
 	@ResponseBody
-	public String saveMenuRole(@RequestBody MenuRolesBean menuRoleBean, HttpServletRequest request, HttpServletResponse response) {
+	public String saveMenuRole(@RequestBody MenuRolesBean menuRolesBean,HttpServletRequest request) {
 		ResultBean resultBean=new ResultBean();
-		menuService.saveMenuRole(menuRoleBean);
+		menuService.saveMenuRole(menuRolesBean);
 		return JsonUtils.toJsonString(resultBean.ok("授权成功！",""));
 	}
 	
-	@RequestAuth(menuKeys = {AuthConstants.ADMIN_ROLE_KEY})
+	
+	
+	@RequestAuth(menuKeys = {"menuManager"})
 	@RequestMapping(value = "/auth/menu/deleteMenuRole")
 	@ResponseBody
-	public String deleteMenuRole(@RequestBody MenuRolesBean menuRoleBean, HttpServletRequest request, HttpServletResponse response) {
+	public String deleteMenuRole(@RequestBody MenuRolesBean menuRolesBean, HttpServletRequest request, HttpServletResponse response) {
 		ResultBean resultBean=new ResultBean();
-		menuService.deleteMenuRole(menuRoleBean);
+		menuService.deleteMenuRole(menuRolesBean);
 		return JsonUtils.toJsonString(resultBean.ok("删除成功！",""));
 	}
 }

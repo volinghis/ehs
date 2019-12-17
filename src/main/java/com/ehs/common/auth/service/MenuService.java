@@ -1,15 +1,12 @@
 package com.ehs.common.auth.service;
 
-import java.util.List;
-
 import com.ehs.common.auth.bean.MenuRolesBean;
-import com.ehs.common.auth.entity.SysMenu;
+import com.ehs.common.auth.bean.RoleBean;
 
 public interface MenuService {
 
-	public void saveMenuRole(MenuRolesBean menuRoleBean);
+	public void saveMenuRole(MenuRolesBean menuRolesBean);
 	
-	public void deleteMenuRole(MenuRolesBean menuRoleBean);
+	public void deleteMenuRole(MenuRolesBean menuRolesBean);
 	
-	public List<SysMenu> findSysMenus(String userKey);
 }

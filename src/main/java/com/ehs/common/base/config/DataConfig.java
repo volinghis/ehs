@@ -18,6 +18,8 @@ public class DataConfig {
 	
 	public static final String TABLE_UNIQUE_KEY="DATA_KEY";
 	
+	public static final String DATA_STATE="REMOVE";
+	
 	public static final boolean DATA_UPDATED=true;
 	
 	@Bean
