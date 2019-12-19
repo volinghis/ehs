@@ -16,6 +16,7 @@
 	
 	<menus targetClass="com.ehs.common.auth.entity.SysMenu">
 		<menu dataCode="systemManager" key="systemManager" name="系统管理" url="" icon="fa-cog" leaf="false" sort="9999" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'>
+			<menu dataCode="orgManager" key="orgManager" name="部门管理" url="/system/orgManager/index" icon="fa-sitemap"  parentKey="systemManager"  sort="39" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'></menu>
 			<menu dataCode="userManager" key="userManager" name="人员管理" url="/system/userManager/user/index" icon="fa-user"  parentKey="systemManager"  sort="40" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'></menu>
 			<menu dataCode="userCenter" key="userCenter" name="个人中心" url="/system/account/center/index" icon="fa-user"  parentKey="systemManager"  sort="15" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'></menu>
 			<menu dataCode="useretting" key="useretting" name="个人设置" url="/system/account/setting/index" icon="fa-user"  parentKey="systemManager"  sort="42" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'></menu>
