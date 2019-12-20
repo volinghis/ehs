@@ -12,9 +12,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.bytebuddy.asm.Advice.This;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -58,6 +60,39 @@ public class BaseUtils {
 		}
 		return hexValue.toString();
 
+	}
+	
+	/**
+	 * 
+	* @Function: BaseUtils.java
+	* @Description: 生产随机数
+	*
+	* @param:描述1描述
+	* @return：返回结果描述
+	* @throws：异常描述
+	*
+	* @version: v1.0.0
+	* @author: zhaol
+	* @date: 2019年12月17日 上午9:27:16 
+	*
+	* Modification History:
+	* Date         Author          Version            Description
+	*---------------------------------------------------------*
+	* 2019年12月17日     zhaol           v1.0.0               修改原因
+	 */
+	public static String getSalt() {
+		// 生成一个16位的随机数
+		Random random = new Random();
+		StringBuilder sBuilder = new StringBuilder(16);
+		sBuilder.append(random.nextInt(99999999)).append(random.nextInt(99999999));
+		int len = sBuilder.length();
+		if (len < 16) {
+			for (int i = 0; i < 16 - len; i++) {
+				sBuilder.append("0");
+			}
+		}
+		// 生成盐
+		return sBuilder.toString();
 	}
 	
 	/**
@@ -177,4 +212,5 @@ public class BaseUtils {
 		}
 		return ip;
 	}
+	
 }
