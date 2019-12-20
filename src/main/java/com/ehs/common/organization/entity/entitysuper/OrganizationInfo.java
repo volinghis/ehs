@@ -34,7 +34,6 @@ public abstract class OrganizationInfo extends BaseEntity {
 	public static final String NAME="name";
 	public static final String REMARK="remark";
 	public static final String PARENT_KEY="parentKey";
-	public static final String IS_EDIT="isEdit";
 	public static final String SORT="sort";
 
 	/**
