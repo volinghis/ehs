@@ -75,7 +75,7 @@ public class LoginController {
 			return JsonUtils.toJsonString(resultBean.error("用户不存在"));
 		}
 //		if(!StringUtils.equals(BaseUtils.string2MD5(loginInfo.getAccount()+loginInfo.getPassword()), sysUser.getPassword())) {
-		if(!StringUtils.equals(BaseUtils.string2MD5(loginInfo.getAccount()+loginInfo.getPassword()+sysUser.getAttribute1()), sysUser.getPassword())) {
+		if(!StringUtils.equals(BaseUtils.string2MD5(loginInfo.getAccount()+loginInfo.getPassword()+sysUser.getSalt()), sysUser.getPassword())) {
 			return JsonUtils.toJsonString(resultBean.error("密码错误"));
 		}
 		if (sysUser.getState()!=null&&sysUser.getState()==1) {

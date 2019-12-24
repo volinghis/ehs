@@ -5,7 +5,7 @@
 	</roles>
 	
 	<users targetClass="com.ehs.common.auth.entity.SysUser">
-		<user key="adminKey" account="admin" password="a66abb5684c45962d887564f08346e8d" roleKeys="sysAdminRoleKey" />	
+		<user key="adminKey" account="admin" password="79e97052920ed9df7dcf9c7e0814e581" roleKeys="sysAdminRoleKey" attribute1="8809078164894050" />	
 	</users>
 	
 	<orgs targetClass="com.ehs.common.organization.entity.OrganizationInfo">

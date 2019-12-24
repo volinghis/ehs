@@ -164,7 +164,7 @@ public class OrgUserServiceImpl implements OrgUserService{
 		sysUser.setState(0);
 		sysUser.setVersionId(0l);
 		sysUser.setKey(UUID.randomUUID().toString());
-		sysUser.setAttribute1(salt);
+		sysUser.setSalt(salt);
 		sysUser.setPassword(BaseUtils.string2MD5(sysUser.getAccount()+"123456"+salt));
 		baseCommonService.saveOrUpdate(sysUser);
 		//保存用户信息
