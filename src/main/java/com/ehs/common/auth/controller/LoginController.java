@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ehs.common.auth.bean.LoginInfoBean;
 import com.ehs.common.auth.config.AuthConstants;
-import com.ehs.common.auth.dao.LoginDao;
 import com.ehs.common.auth.entity.SysUser;
 import com.ehs.common.auth.interfaces.RequestAuth;
 import com.ehs.common.auth.service.LoginService;
@@ -71,12 +70,12 @@ public class LoginController {
 	public String doLogin(@RequestBody LoginInfoBean loginInfo, HttpServletRequest request) {
 		String account=loginInfo.getAccount();
 		SysUser sysUser=loginService.findByAccount(account);
-		//LoginResultBean loginResultBean=new LoginResultBean();
 		ResultBean resultBean=new ResultBean();
 		if(sysUser==null) {
 			return JsonUtils.toJsonString(resultBean.error("用户不存在"));
 		}
-		if(!StringUtils.equals(BaseUtils.string2MD5(loginInfo.getAccount()+loginInfo.getPassword()), sysUser.getPassword())) {
+//		if(!StringUtils.equals(BaseUtils.string2MD5(loginInfo.getAccount()+loginInfo.getPassword()), sysUser.getPassword())) {
+		if(!StringUtils.equals(BaseUtils.string2MD5(loginInfo.getAccount()+loginInfo.getPassword()+sysUser.getAttribute1()), sysUser.getPassword())) {
 			return JsonUtils.toJsonString(resultBean.error("密码错误"));
 		}
 		if (sysUser.getState()!=null&&sysUser.getState()==1) {
