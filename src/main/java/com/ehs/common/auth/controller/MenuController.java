@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections4.functors.FalsePredicate;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -83,6 +84,9 @@ public class MenuController {
 	@ResponseBody
 	public String getMenu(HttpServletRequest request,HttpServletResponse response) {
 		List<SysMenu> smList =(List<SysMenu>)baseCommonService.findAll(SysMenu.class);
+		if (Boolean.valueOf(request.getParameter("menuAuth"))) {
+			smList=smList.stream().filter(sm->!sm.getBusiness()).collect(Collectors.toList());
+		}
 		if (smList == null || smList.isEmpty()) {
 			return "[]";
 		}
