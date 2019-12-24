@@ -18,6 +18,9 @@ public interface OrgUserDao extends JpaRepository<OrgUser, String> {
 
 	@Query(" select u from OrgUser u where u.orgKey=?1 and u."+OrgUser.DATA_MODEL+"<>'"+DataConfig.UNSHOW_DATA_STATE+"'" )
 	public Page<OrgUser> findUserByOrgKey(String orgKey, String query, PageRequest pageRequest);
+
+	@Query(" select u from OrgUser u where u."+OrgUser.DATA_MODEL+"<>'"+DataConfig.UNSHOW_DATA_STATE+"' order by "+BaseEntity.CREATION_TIME+" desc")
+	public Page<OrgUser> findUsers(PageRequest pageRequest);
 	
 	
 }

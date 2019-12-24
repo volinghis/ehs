@@ -8,6 +8,7 @@
  */
 package com.ehs.common.organization.entity.entitysuper;
 
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import com.ehs.common.base.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -47,6 +48,8 @@ public abstract  class OrgUser extends BaseEntity {
 	public static final String HOME_TOWN="homeTown";
 	public static final String PROFESSION="profession";
 	public static final String GRADUATED_DATE="graduatedDate";
+	
+	public static final String ROLES="roles";
 	
 	/**
 	 * 员工编号
@@ -123,6 +126,12 @@ public abstract  class OrgUser extends BaseEntity {
 	 */
 	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
 	private String graduatedDate;
+	
+	/**
+	 * 角色
+	 */
+	@Column(length = 4000)
+	private String roles;
 	
 	public String getOrgKey() {
 		return orgKey;
@@ -243,6 +252,14 @@ public abstract  class OrgUser extends BaseEntity {
 
 	public void setGraduatedDate(String graduatedDate) {
 		this.graduatedDate = graduatedDate;
+	}
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
 	}
 	
 }
