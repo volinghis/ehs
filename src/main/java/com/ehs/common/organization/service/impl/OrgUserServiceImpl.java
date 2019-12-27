@@ -401,4 +401,15 @@ public class OrgUserServiceImpl implements OrgUserService{
 		return null;
 	}
 
+	/** 
+	* @see com.ehs.common.organization.service.OrgUserService#findOrgUserByDataCode(java.lang.String)  
+	*/
+	@Override
+	public OrgUser findOrgUserByDataCode(String code) {
+		// TODO Auto-generated method stub
+		Assert.notNull(code, "params dataCode or accoount is required");
+		return orgUserDao.findOrgUserByDataCode(code);
+	}
+	
+
 }

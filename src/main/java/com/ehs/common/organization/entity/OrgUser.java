@@ -37,7 +37,7 @@ import com.ehs.common.base.entity.BaseEntity;
 * 2019年5月28日      chentm          v1.0.0               修改原因
 */
 @Entity
-@Table(name = "ORG_USER_BASE_INFO",uniqueConstraints = @UniqueConstraint(columnNames = DataConfig.TABLE_UNIQUE_KEY))
+@Table(name = "ORG_USER_BASE_INFO",uniqueConstraints = @UniqueConstraint(columnNames = {DataConfig.TABLE_UNIQUE_KEY,com.ehs.common.organization.entity.entitysuper.OrgUser.DATA_CODE}))
 public class OrgUser extends com.ehs.common.organization.entity.entitysuper.OrgUser {
 
 	private static final long serialVersionUID = 1L;

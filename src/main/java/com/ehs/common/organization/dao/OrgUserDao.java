@@ -134,4 +134,5 @@ public interface OrgUserDao extends JpaRepository<OrgUser, String> {
 	@Query(" select u from OrgUser u where u.orgKey=?1 and u."+OrgUser.DATA_MODEL+"<>'"+DataConfig.UNSHOW_DATA_STATE+"'" )
 	public Page<OrgUser> findUserByOrgKey(String orgKey, PageRequest pageRequest);
 
+	public OrgUser findOrgUserByDataCode(String code);
 }

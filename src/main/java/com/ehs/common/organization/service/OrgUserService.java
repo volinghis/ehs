@@ -206,4 +206,21 @@ public interface OrgUserService {
 	public List<OrgUser> findUserByOrgKey(String key);
 
 	public PageInfoBean findAllRolesByUserKey(String userKey, RoleQueryBean queryBean);
+	
+	/**
+	 * 
+	* @Function:findOrgUserByDataCode 
+	* @Description: 根据dataCode获取当前用户
+	* @return
+	* @throws：异常描述
+	* @version: v1.0.0
+	* @author: qjj
+	* @date: 2019年12月27日 下午3:51:22 
+	*
+	* Modification History:
+	* Date        Author        Version      Description
+	*---------------------------------------------------------*
+	* 2019年12月27日     qjj        v1.0.0            修改原因
+	 */
+	public OrgUser findOrgUserByDataCode(String code);
 }

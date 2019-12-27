@@ -387,4 +387,27 @@ public class OrgUserController {
 		}
 		return JsonUtils.toJsonString(resultBean.ok("该工号可以使用"));
 	}
+	
+	/**
+	 * 
+	* @Function:findOrgUserByAccount 
+	* @Description: 根据账号或dataCode 获取当前用户
+	* @param request
+	* @return
+	* @throws：异常描述
+	* @version: v1.0.0
+	* @author: qjj
+	* @date: 2019年12月27日 下午4:01:50 
+	*
+	* Modification History:
+	* Date        Author        Version      Description
+	*---------------------------------------------------------*
+	* 2019年12月27日     qjj        v1.0.0            修改原因
+	 */
+	@RequestAuth(menuKeys = {"userManager"})
+	@RequestMapping(value = "/auth/orgUser/findOrgUserByAccount")
+	public String findOrgUserByAccount(HttpServletRequest request) {
+		String dataCode=request.getParameter("dataCode");
+		return JsonUtils.toJsonString(orgUserService.findOrgUserByDataCode(dataCode));
+	}
 }
