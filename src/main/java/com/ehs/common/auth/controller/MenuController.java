@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ehs.common.auth.bean.MenuNode;
 import com.ehs.common.auth.bean.MenuRolesBean;
 import com.ehs.common.auth.bean.RoleBean;
+import com.ehs.common.auth.bean.RoleQueryBean;
 import com.ehs.common.auth.config.AuthConstants;
 import com.ehs.common.auth.entity.SysRole;
 import com.ehs.common.auth.entity.entitysuper.SysMenu;
@@ -28,6 +29,7 @@ import com.ehs.common.auth.service.MenuService;
 import com.ehs.common.auth.service.RoleService;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.utils.JsonUtils;
+import com.ehs.common.oper.bean.PageInfoBean;
 import com.ehs.common.oper.bean.ResultBean;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -172,25 +174,10 @@ public class MenuController {
 	@RequestAuth(menuKeys = {"menuManager"})
 	@RequestMapping(value = "/auth/menu/findAllRolesByMenuKey")
 	@ResponseBody
-	public String findAllRolesByMenuKey(HttpServletRequest request, HttpServletResponse response) {
-		List<SysRole> allRoles=(List<SysRole>)baseCommonService.findAll(SysRole.class);
-		if(allRoles==null||allRoles.isEmpty()) {
-			return "[]";
-		}
-		String menuKey=request.getParameter("menuKey");
-		List<SysRole> roles=roleService.findRolesByMenuKey(menuKey);
-		if(roles==null||roles.isEmpty()) {
-			List<SysRole> roleList=allRoles.stream().filter(
-					s->(!StringUtils.equals(s.getKey(), "sysAdminRoleKey"))
-					).collect(Collectors.toList());
-			return JsonUtils.toJsonString(roleList);
-		}
-		return JsonUtils.toJsonString(allRoles.stream().filter(
-				s->roles.stream().allMatch(ss->(!StringUtils.equals(s.getKey(), ss.getKey()))
-				&&(!StringUtils.equals(s.getKey(), "sysAdminRoleKey")))
-				).collect(Collectors.toList()));
+	public String findAllRolesByMenuKey(@RequestBody RoleQueryBean roleQueryBean,HttpServletResponse response) {
+		PageInfoBean pb = roleService.findRoles(roleQueryBean);
+		 return (pb==null?"[]":JsonUtils.toJsonString(pb));
 	}
-	
 	
 	/**
 	 * 
