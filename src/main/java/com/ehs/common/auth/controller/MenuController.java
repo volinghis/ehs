@@ -9,12 +9,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections4.functors.FalsePredicate;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehs.common.auth.bean.MenuNode;
@@ -28,7 +26,6 @@ import com.ehs.common.auth.interfaces.RequestAuth;
 import com.ehs.common.auth.local.SysAccessUser;
 import com.ehs.common.auth.service.MenuService;
 import com.ehs.common.auth.service.RoleService;
-import com.ehs.common.auth.service.impl.MenuServiceImpl;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.utils.JsonUtils;
 import com.ehs.common.oper.bean.ResultBean;
