@@ -67,7 +67,7 @@ public class UserController {
 	 *        ---------------------------------------------------------* 2019年12月24日
 	 *        qjj v1.0.0 修改原因
 	 */
-	@RequestAuth(menuKeys = {"*"})
+	@RequestAuth(menuKeys = {"userManager"})
 	@RequestMapping(value = "/auth/userManager/changPassword")
 	public String changPassword(HttpServletRequest request, @RequestBody PassWordBean passWordBean) {
 		ResultBean resultBean = new ResultBean();
@@ -75,10 +75,9 @@ public class UserController {
 		// 当前用户
 		SysUser sysUser = baseCommonService.findByKey(SysUser.class, sessionBean.getSession(request));
 		oldPwd = BaseUtils.string2MD5(sysUser.getAccount() + oldPwd + sysUser.getSalt());
-		System.out.println("++++++++++++++++++++++++"+sysUser.getAccount()+"\n" + oldPwd + "\n" + sysUser.getPassword());
 		if (StringUtils.equals(sysUser.getPassword(), oldPwd)) {
 			if (userService.changePassWord(sysUser, passWordBean.getNewPass())) {
-				return JsonUtils.toJsonString(resultBean.error("密码修改成功"));
+				return JsonUtils.toJsonString(resultBean.ok("密码修改成功"));
 			}
 		}
 		return JsonUtils.toJsonString(resultBean.error("用户密码输入错误"));

@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Boolean changePassWord(SysUser sysUser,String newPass) {
 		// TODO Auto-generated method stub
-		newPass=BaseUtils.string2MD5(sysUser.getAccount()+newPass+sysUser.getAttribute1());
+		newPass=BaseUtils.string2MD5(sysUser.getAccount()+newPass+sysUser.getSalt());
 		sysUser.setPassword(newPass);
 		BaseEntity bEntity=	baseCommonService.saveOrUpdate(sysUser);
 		return bEntity!=null? true: false;
