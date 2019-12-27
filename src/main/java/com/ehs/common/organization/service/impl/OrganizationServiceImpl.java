@@ -1,26 +1,17 @@
 package com.ehs.common.organization.service.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.ehs.common.base.entity.BaseEntity;
 import com.ehs.common.base.service.BaseCommonService;
-import com.ehs.common.base.utils.JsonUtils;
 import com.ehs.common.oper.bean.PageInfoBean;
 import com.ehs.common.organization.bean.OrgQueryBean;
 import com.ehs.common.organization.dao.OrganizationDao;
-import com.ehs.common.organization.entity.OrgUser;
 import com.ehs.common.organization.entity.OrganizationInfo;
 import com.ehs.common.organization.service.OrganizationService;
 
@@ -49,26 +40,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 	
 	/**
 	 * 
-	* @see com.ehs.common.organization.service.OrganizationService#findOrgsByParentKey(java.lang.String)  
-	* @Function: OrganizationServiceImpl.java
-	* @Description: 该函数的功能描述
-	*
-	* Modification History:
-	* Date         Author          Version            Description
-	*---------------------------------------------------------*
-	* 2019年12月19日     zhaol           v1.0.0               修改原因
-	 */
-//	@Override
-//	public List<OrganizationInfo> findOrgsByParentKey(String orgParentKey) {
-//		// TODO Auto-generated method stub
-//		return organizationDao.findOrgsByParentKey(orgParentKey);
-//	}
-
-	/**
-	 * 
 	* @see com.ehs.common.organization.service.OrganizationService#saveOrg(com.ehs.common.organization.entity.OrganizationInfo)  
 	* @Function: OrganizationServiceImpl.java
-	* @Description: 该函数的功能描述
+	* @Description: 保存部门
 	*
 	* Modification History:
 	* Date         Author          Version            Description
@@ -77,20 +51,21 @@ public class OrganizationServiceImpl implements OrganizationService {
 	 */
 	@Override
 	@Transactional
-	public OrganizationInfo saveOrg(OrganizationInfo orgInfo) {
+	public void saveOrg(OrganizationInfo orgInfo) {
 		// TODO Auto-generated method stub
-		System.out.println("dataCode===="+orgInfo.getDataCode());
-		System.out.println("name===="+orgInfo.getName());
-		System.out.println("parentKey===="+orgInfo.getParentKey());
-		orgInfo.setKey(orgInfo.getDataCode());
-		return baseCommonService.saveOrUpdate(orgInfo);
+		try {
+			baseCommonService.saveOrUpdate(orgInfo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * 
 	* @see com.ehs.common.organization.service.OrganizationService#deleteOrgByKey(java.lang.String)  
 	* @Function: OrganizationServiceImpl.java
-	* @Description: 该函数的功能描述
+	* @Description: 删除部门
 	*
 	* @param:描述1描述
 	* @return：返回结果描述
@@ -117,12 +92,30 @@ public class OrganizationServiceImpl implements OrganizationService {
 		}
 	}
 
+	/**
+	 * 
+	* @see com.ehs.common.organization.service.OrganizationService#getAllOrgsTable(java.lang.String, com.ehs.common.organization.bean.OrgQueryBean)  
+	* @Function: OrganizationServiceImpl.java
+	* @Description: 查询部门
+	*
+	* @param:描述1描述
+	* @return：返回结果描述
+	* @throws：异常描述
+	*
+	* @version: v1.0.0
+	* @author: zhaol
+	* @date: 2019年12月26日 上午11:14:26 
+	*
+	* Modification History:
+	* Date         Author          Version            Description
+	*---------------------------------------------------------*
+	* 2019年12月26日     zhaol           v1.0.0               修改原因
+	 */
 	@Override
 	public PageInfoBean getAllOrgsTable(String orgParentKey,OrgQueryBean queryBean) {
 		// TODO Auto-generated method stub
 		PageRequest pageRequest =PageRequest.of(queryBean.getPage()-1, queryBean.getSize());
 		PageInfoBean pb=new PageInfoBean();
-		System.out.println("orgParentKey=============="+orgParentKey);
 		if(StringUtils.isNotBlank(orgParentKey)) {
 			Page<OrganizationInfo> orgs=organizationDao.findOrgsByParentKey(orgParentKey,queryBean.getQuery(), pageRequest);
 			if (orgs!=null) {

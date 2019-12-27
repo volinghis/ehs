@@ -3,7 +3,6 @@ package com.ehs.common.organization.controller;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,14 +15,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ehs.common.auth.interfaces.RequestAuth;
-import com.ehs.common.base.entity.BaseEntity;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.utils.JsonUtils;
 import com.ehs.common.oper.bean.PageInfoBean;
 import com.ehs.common.oper.bean.ResultBean;
 import com.ehs.common.organization.bean.OrgQueryBean;
 import com.ehs.common.organization.bean.OrganizationBean;
+import com.ehs.common.organization.entity.OrgUser;
 import com.ehs.common.organization.entity.OrganizationInfo;
+import com.ehs.common.organization.service.OrgUserService;
 import com.ehs.common.organization.service.OrganizationService;
 
 /**   
@@ -45,8 +45,12 @@ public class OrganizationController {
 	
 	@Resource
 	private OrganizationService organizationService;
+	
 	@Resource
 	private BaseCommonService baseCommonService;
+	
+	@Resource
+	private OrgUserService orgUserService;
 	
 	/**
 	 * 
@@ -164,9 +168,14 @@ public class OrganizationController {
 	@RequestMapping(value = "/auth/organization/saveOrg")
 	public String saveOrg(@RequestBody OrganizationInfo orgInfo, HttpServletRequest request,HttpServletResponse response) {
 		ResultBean resultBean=new ResultBean();
-		System.out.println("准备保存部门");
-	 	OrganizationInfo org = organizationService.saveOrg(orgInfo);
-		return JsonUtils.toJsonString(resultBean.ok("认证成功",org.getKey()));
+	 	try {
+			organizationService.saveOrg(orgInfo);
+			return JsonUtils.toJsonString(resultBean.ok("认证成功"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	 	return JsonUtils.toJsonString(resultBean.error("保存失败"));
 	}
 
 	/**
@@ -189,11 +198,16 @@ public class OrganizationController {
 	 */
 	@RequestAuth(menuKeys = {"orgManager"})
 	@RequestMapping(value = "/auth/orgManager/deleteOrgInfo")
-	public String deleteRoleInfo(HttpServletRequest request) {
+	public String deleteOrgInfo(HttpServletRequest request) {
 		ResultBean resultBean=new ResultBean();
 		String key=request.getParameter("key");
+		List<OrgUser> users=orgUserService.findUserByOrgKey(key);
+		System.out.println("count==================="+users.size());
+		if (users.size() > 0) {
+			return JsonUtils.toJsonString(resultBean.error("该部门下存在用户，请先删除该部门用户"));
+		}
 		organizationService.deleteOrgByKey(key);
-		return JsonUtils.toJsonString(resultBean.ok("角色删除成功"));
+		return JsonUtils.toJsonString(resultBean.ok("部门删除成功"));
 	}
 	
 }
