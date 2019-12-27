@@ -81,7 +81,6 @@ public class SessionBean {
 		try {
 			String sessionSysUserKey = (String) httpRequest.getSession()
 					.getAttribute(AuthConstants.SESSION_SYSUSER_KEY);
-
 			if (StringUtils.isBlank(sessionSysUserKey)) {
 				logger.error(BaseUtils.getIpAddress(httpRequest)+"：进行了未登录访问！");
 				return AuthConstants.VALID_NO_USER_CODE;
