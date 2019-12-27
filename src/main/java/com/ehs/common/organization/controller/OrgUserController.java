@@ -1,8 +1,6 @@
 package com.ehs.common.organization.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ehs.common.auth.entity.SysRole;
+import com.ehs.common.auth.bean.RoleQueryBean;
 import com.ehs.common.auth.interfaces.RequestAuth;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.utils.JsonUtils;
 import com.ehs.common.oper.bean.PageInfoBean;
 import com.ehs.common.oper.bean.ResultBean;
 import com.ehs.common.organization.bean.UserQueryBean;
+import com.ehs.common.organization.bean.UserRolesBean;
 import com.ehs.common.organization.entity.OrgUser;
 import com.ehs.common.organization.service.OrgUserService;
 
@@ -152,13 +151,13 @@ public class OrgUserController {
 	@RequestMapping(value = "/auth/orgUser/saveOrgUser")
 	public String saveOrgUser(@RequestBody OrgUser orgUser,HttpServletRequest request, HttpServletResponse response) {
 		ResultBean resultBean=new ResultBean();
-		List<OrgUser> users= (List<OrgUser>)baseCommonService.findAll(OrgUser.class);
-		if (users!=null&&users.size()>0) {
-			long c=users.stream().filter(s->StringUtils.equals(s.getDataCode(),orgUser.getDataCode())&&!StringUtils.equals(s.getKey(), orgUser.getKey())).count();
-			if(c>0) {
-				return JsonUtils.toJsonString(resultBean.error("保存用户失败:已存在相同用户编号"));
-			}
-		}
+//		List<OrgUser> users= (List<OrgUser>)baseCommonService.findAll(OrgUser.class);
+//		if (users!=null&&users.size()>0) {
+//			long c=users.stream().filter(s->StringUtils.equals(s.getDataCode(),orgUser.getDataCode())&&!StringUtils.equals(s.getKey(), orgUser.getKey())).count();
+//			if(c>0) {
+//				return JsonUtils.toJsonString(resultBean.error("保存用户失败:已存在相同用户编号"));
+//			}
+//		}
 		OrgUser user = orgUserService.saveUser(orgUser);
 		return JsonUtils.toJsonString(resultBean.ok("保存角色成功",user.getKey()));
 	}
@@ -225,7 +224,33 @@ public class OrgUserController {
 	/**
 	 * 
 	* @Function: OrgUserController.java
-	* @Description: 该函数的功能描述
+	* @Description: 根据用户获取角色
+	*
+	* @param:描述1描述
+	* @return：返回结果描述
+	* @throws：异常描述
+	*
+	* @version: v1.0.0
+	* @author: zhaol
+	* @date: 2019年12月24日 上午10:10:06 
+	*
+	* Modification History:
+	* Date         Author          Version            Description
+	*---------------------------------------------------------*
+	* 2019年12月24日     zhaol           v1.0.0               修改原因
+	 */
+	@RequestAuth(menuKeys = {"userManager"})
+	@RequestMapping(value = "/auth/orgUser/findUserRoles")
+	@ResponseBody
+	public String findUserRoles(HttpServletRequest request, HttpServletResponse response) {
+		String userKey=request.getParameter("userKey");
+		return JsonUtils.toJsonString(orgUserService.findRolesByUserKey(userKey));
+	}
+	
+	/**
+	 * 
+	* @Function: OrgUserController.java
+	* @Description: 根据用户查询角色
 	*
 	* @param:描述1描述
 	* @return：返回结果描述
@@ -244,17 +269,122 @@ public class OrgUserController {
 	@RequestMapping(value = "/auth/orgUser/findAllRolesByUserKey")
 	public String findAllRolesByUserKey(HttpServletRequest request) {
 		System.out.println("根据用户查找角色");
-		List<SysRole> allRoles=(List<SysRole>)baseCommonService.findAll(SysRole.class);
-		if(allRoles==null||allRoles.isEmpty()) {
-			return "[]";
-		}
 		String userKey=request.getParameter("userKey");
-		System.out.println("userKey============"+userKey);
-		List<SysRole> roles=orgUserService.findRolesByUserKey(userKey);
-		if(roles==null||roles.isEmpty()) {
-			List<SysRole> roleList=allRoles.stream().filter(s->(!StringUtils.equals(s.getKey(), "sysAdminRoleKey"))).collect(Collectors.toList());
-			return JsonUtils.toJsonString(roleList);
+		String query=request.getParameter("query");
+		RoleQueryBean queryBean =(RoleQueryBean) JsonUtils.parseObject(query, RoleQueryBean.class);
+		PageInfoBean pb = orgUserService.findAllRolesByUserKey(userKey,queryBean);
+		return (pb==null?"[]":JsonUtils.toJsonString(pb));
+	}
+	
+	/**
+	 * 
+	* @Function: OrgUserController.java
+	* @Description: 添加用户角色
+	*
+	* @param:描述1描述
+	* @return：返回结果描述
+	* @throws：异常描述
+	*
+	* @version: v1.0.0
+	* @author: zhaol
+	* @date: 2019年12月25日 下午4:13:32 
+	*
+	* Modification History:
+	* Date         Author          Version            Description
+	*---------------------------------------------------------*
+	* 2019年12月25日     zhaol           v1.0.0               修改原因
+	 */
+	@RequestAuth(menuKeys = {"userManager"})
+	@RequestMapping(value = "/auth/orgUser/saveUserRole")
+	@ResponseBody
+	public String saveUserRoles(@RequestBody UserRolesBean userRolesBean, HttpServletRequest request) {
+		ResultBean resultBean=new ResultBean();
+		try {
+			orgUserService.saveUserRole(userRolesBean);
+			return JsonUtils.toJsonString(resultBean.ok("授权成功！",""));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return JsonUtils.toJsonString(allRoles.stream().filter(s->roles.stream().allMatch(ss->(!StringUtils.equals(s.getKey(), ss.getKey()))&&(!StringUtils.equals(s.getKey(), "sysAdminRoleKey")))).collect(Collectors.toList()));
+		return JsonUtils.toJsonString(resultBean.error("授权失败！"));
+	}
+	
+	/**
+	 * 
+	* @Function: OrgUserController.java
+	* @Description: 删除用户角色
+	*
+	* @param:描述1描述
+	* @return：返回结果描述
+	* @throws：异常描述
+	*
+	* @version: v1.0.0
+	* @author: zhaol
+	* @date: 2019年12月25日 下午4:13:13 
+	*
+	* Modification History:
+	* Date         Author          Version            Description
+	*---------------------------------------------------------*
+	* 2019年12月25日     zhaol           v1.0.0               修改原因
+	 */
+	@RequestAuth(menuKeys = {"userManager"})
+	@RequestMapping(value = "/auth/orgUser/deleteUserRole")
+	@ResponseBody
+	public String deleteUserRole(@RequestBody UserRolesBean userRolesBean, HttpServletRequest request) {
+		ResultBean resultBean=new ResultBean();
+		try {
+			orgUserService.deleteUserRole(userRolesBean);
+			return JsonUtils.toJsonString(resultBean.ok("删除成功！",""));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return JsonUtils.toJsonString(resultBean.error("删除失败！"));
+	}
+	
+	/**
+	 * 
+	* @Function: OrgUserController.java
+	* @Description: 验证账号是否唯一
+	*
+	* @param:描述1描述
+	* @return：返回结果描述
+	* @throws：异常描述
+	*
+	* @version: v1.0.0
+	* @author: zhaol
+	* @date: 2019年12月25日 下午4:12:53 
+	*
+	* Modification History:
+	* Date         Author          Version            Description
+	*---------------------------------------------------------*
+	* 2019年12月25日     zhaol           v1.0.0               修改原因
+	 */
+	@RequestAuth(menuKeys = {"userManager"})
+	@RequestMapping(value = "/auth/orgUser/userValidation")
+	@ResponseBody
+	public String userValidation(HttpServletRequest request) {
+		ResultBean resultBean=new ResultBean();
+		String dataCode = request.getParameter("dataCode");
+		String key = request.getParameter("key");
+		List<OrgUser> users = (List<OrgUser>) baseCommonService.findAll(OrgUser.class);
+		long count=users.stream().filter((e)->e.getDataCode().equals(dataCode)).count();
+		if (!StringUtils.isBlank(key)) {
+			OrgUser user=(OrgUser)baseCommonService.findByKey(OrgUser.class, key);
+			if(user != null) {
+				System.out.println("user===dataCode==="+user.getDataCode());
+				if(StringUtils.equals(dataCode, user.getDataCode())) {
+					return JsonUtils.toJsonString(resultBean.ok("该工号尚未修改"));
+				}else {
+					if(!dataCode.equals(user.getDataCode()) && count > 0l) {
+						return JsonUtils.toJsonString(resultBean.error("该员工工号已经存在，请重新确认"));
+					}
+				}
+			}
+		}
+		if (count >= 1l) {
+			return JsonUtils.toJsonString(resultBean.error("该员工工号已经存在，请重新确认"));
+		}
+		return JsonUtils.toJsonString(resultBean.ok("该工号可以使用"));
 	}
 }
