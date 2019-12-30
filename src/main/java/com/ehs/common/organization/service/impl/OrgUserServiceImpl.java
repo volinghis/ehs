@@ -326,7 +326,6 @@ public class OrgUserServiceImpl implements OrgUserService{
 		// TODO Auto-generated method stub
 		OrgUser user = baseCommonService.findByKey(OrgUser.class, userRolesBean.getUserKey());
 		SysUser sysUser = loginDao.findByAccount(user.getDataCode());
-		System.out.println("sysUser.getRoleKeys()=============="+sysUser.getRoleKeys());
 		List<RoleBean> sysRoles = userRolesBean.getRoleList();
 		StringBuffer sb = new StringBuffer();
 		if(user.getRoles() != null) {
@@ -347,13 +346,31 @@ public class OrgUserServiceImpl implements OrgUserService{
 		baseCommonService.saveOrUpdate(user);
 	}
 
+	/**
+	 * 
+	* @see com.ehs.common.organization.service.OrgUserService#deleteUserRole(com.ehs.common.organization.bean.UserRolesBean)  
+	* @Function: OrgUserServiceImpl.java
+	* @Description: 该函数的功能描述
+	*
+	* @param:描述1描述
+	* @return：返回结果描述
+	* @throws：异常描述
+	*
+	* @version: v1.0.0
+	* @author: zhaol
+	* @date: 2019年12月30日 下午3:31:03 
+	*
+	* Modification History:
+	* Date         Author          Version            Description
+	*---------------------------------------------------------*
+	* 2019年12月30日     zhaol           v1.0.0               修改原因
+	 */
 	@Override
 	@Transactional
 	public void deleteUserRole(UserRolesBean userRolesBean) {
 		// TODO Auto-generated method stub
 		OrgUser user = baseCommonService.findByKey(OrgUser.class, userRolesBean.getUserKey());
 		SysUser sysUser = loginDao.findByAccount(user.getDataCode());
-		System.out.println("sysUser.getRoleKeys().split(\",\")===="+sysUser.getRoleKeys().split(",").toString());
 		List<String> roleKeys = new ArrayList(Arrays.asList(sysUser.getRoleKeys().split(",")));
 		List<RoleBean> roles = userRolesBean.getRoleList();
 		List<RoleBean> roleBeans = new ArrayList<RoleBean>();
@@ -369,12 +386,50 @@ public class OrgUserServiceImpl implements OrgUserService{
 		baseCommonService.saveOrUpdate(user);
 	}
 
+	/**
+	 * 
+	* @see com.ehs.common.organization.service.OrgUserService#findUserByOrgKey(java.lang.String)  
+	* @Function: OrgUserServiceImpl.java
+	* @Description: 该函数的功能描述
+	*
+	* @param:描述1描述
+	* @return：返回结果描述
+	* @throws：异常描述
+	*
+	* @version: v1.0.0
+	* @author: zhaol
+	* @date: 2019年12月30日 下午3:30:59 
+	*
+	* Modification History:
+	* Date         Author          Version            Description
+	*---------------------------------------------------------*
+	* 2019年12月30日     zhaol           v1.0.0               修改原因
+	 */
 	@Override
 	public List<OrgUser> findUserByOrgKey(String key) {
 		// TODO Auto-generated method stub
 		return orgUserDao.findUsrByOrgKey(key);
 	}
 
+	/**
+	 * 
+	* @see com.ehs.common.organization.service.OrgUserService#findAllRolesByUserKey(java.lang.String, com.ehs.common.auth.bean.RoleQueryBean)  
+	* @Function: OrgUserServiceImpl.java
+	* @Description: 该函数的功能描述
+	*
+	* @param:描述1描述
+	* @return：返回结果描述
+	* @throws：异常描述
+	*
+	* @version: v1.0.0
+	* @author: zhaol
+	* @date: 2019年12月30日 下午3:30:55 
+	*
+	* Modification History:
+	* Date         Author          Version            Description
+	*---------------------------------------------------------*
+	* 2019年12月30日     zhaol           v1.0.0               修改原因
+	 */
 	@Override
 	public PageInfoBean findAllRolesByUserKey(String userKey, RoleQueryBean queryBean) {
 		// TODO Auto-generated method stub
@@ -390,6 +445,15 @@ public class OrgUserServiceImpl implements OrgUserService{
 		}
 		List<SysRole> sysRoles= allRoles.stream().filter(s->roles.stream().allMatch(ss->(!StringUtils.equals(s.getKey(), ss.getKey())))).collect(Collectors.toList());
 		if(sysRoles != null) {
+			if (StringUtils.isNotBlank(queryBean.getQuery())) {
+				Page<SysRole> sys_roles = roleDao.findRoles(queryBean.getQuery(), pageRequest);
+				if (sys_roles != null) {
+					PageInfoBean pb = new PageInfoBean();
+					pb.setDataList(sys_roles.getContent());
+					pb.setTotalCount(sys_roles.getTotalElements());
+					return pb;
+				}
+			}
 			Page<SysRole> sys_roles = roleDao.findRoles(queryBean.getQuery(), pageRequest);
 			if (sys_roles != null) {
 				PageInfoBean pb = new PageInfoBean();
