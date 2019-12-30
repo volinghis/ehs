@@ -48,32 +48,6 @@ public class OrgUserController {
 	/**
 	 * 
 	* @Function: OrgUserController.java
-	* @Description: 该函数的功能描述
-	*
-	* @param:描述1描述
-	* @return：返回结果描述
-	* @throws：异常描述
-	*
-	* @version: v1.0.0
-	* @author: zhaol
-	* @date: 2019年12月19日 下午7:10:19 
-	*
-	* Modification History:
-	* Date         Author          Version            Description
-	*---------------------------------------------------------*
-	* 2019年12月19日     zhaol           v1.0.0               修改原因
-	 */
-	@RequestAuth(menuKeys = {"userManager"})
-	@RequestMapping(value = "/auth/orgUser/addUser")
-	public String addOrgUser(HttpServletRequest request) {
-		String orgKey = request.getParameter("orgkey");
-		System.out.println("orgkey============="+orgKey);
-		return null;
-	}
-	
-	/**
-	 * 
-	* @Function: OrgUserController.java
 	* @Description: 查询所有用户
 	*
 	* @param:描述1描述
@@ -125,7 +99,6 @@ public class OrgUserController {
 			uq = (UserQueryBean) JsonUtils.parseObject(searchData, UserQueryBean.class);
 		}
 		PageInfoBean users=orgUserService.findUserByOrgKey(orgKey,queryBean,uq);
-		System.out.println("JsonUtils.toJsonString(users)==="+JsonUtils.toJsonString(users));
 		return (users == null ? "[]" : JsonUtils.toJsonString(users));
 	}
 	
@@ -268,7 +241,6 @@ public class OrgUserController {
 	@RequestAuth(menuKeys = {"userManager"})
 	@RequestMapping(value = "/auth/orgUser/findAllRolesByUserKey")
 	public String findAllRolesByUserKey(HttpServletRequest request) {
-		System.out.println("根据用户查找角色");
 		String userKey=request.getParameter("userKey");
 		String query=request.getParameter("query");
 		RoleQueryBean queryBean =(RoleQueryBean) JsonUtils.parseObject(query, RoleQueryBean.class);
