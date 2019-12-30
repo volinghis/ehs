@@ -405,10 +405,14 @@ public class OrgUserServiceImpl implements OrgUserService{
 	* @see com.ehs.common.organization.service.OrgUserService#findOrgUserByDataCode(java.lang.String)  
 	*/
 	@Override
-	public OrgUser findOrgUserByDataCode(String code) {
+	public OrgUser findOrgUserBySysUserKey(String code) {
 		// TODO Auto-generated method stub
-		Assert.notNull(code, "params dataCode or accoount is required");
-		return orgUserDao.findOrgUserByDataCode(code);
+		Assert.notNull(code, "params accoount is required");
+		SysUser sysUser=loginDao.findByAccount(code);
+		if (sysUser!=null) {
+			return orgUserDao.findOrgUserBySysUserKey(sysUser.getKey());
+		}
+		return null;
 	}
 	
 

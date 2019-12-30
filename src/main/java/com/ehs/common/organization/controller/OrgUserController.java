@@ -407,7 +407,8 @@ public class OrgUserController {
 	@RequestAuth(menuKeys = {"userManager"})
 	@RequestMapping(value = "/auth/orgUser/findOrgUserByAccount")
 	public String findOrgUserByAccount(HttpServletRequest request) {
-		String dataCode=request.getParameter("dataCode");
-		return JsonUtils.toJsonString(orgUserService.findOrgUserByDataCode(dataCode));
+		String account=request.getParameter("account");
+		OrgUser orgUser=orgUserService.findOrgUserBySysUserKey(account);
+		return orgUser==null?"{}":JsonUtils.toJsonString(orgUser);
 	}
 }

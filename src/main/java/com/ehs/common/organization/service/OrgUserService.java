@@ -222,5 +222,5 @@ public interface OrgUserService {
 	*---------------------------------------------------------*
 	* 2019年12月27日     qjj        v1.0.0            修改原因
 	 */
-	public OrgUser findOrgUserByDataCode(String code);
+	public OrgUser findOrgUserBySysUserKey(String code);
 }
