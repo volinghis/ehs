@@ -1,6 +1,5 @@
 package com.ehs.eam.eamPartLibraryManager.entity.entitySuper;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -48,54 +47,30 @@ public abstract class PartsAccount extends BaseEntity {
 	private String deviceCode;
 	
 	/**
-	 * 备件型号
-	 */
-	private String model;
-	
-	/**
-	 * 设备类别
-	 */
-	private String category;
-	
-	/**
-	 * 备件类型
-	 */
-	private String type;
-	
-	/**
-	 * 品牌
-	 */
-	private String brand;
-	
-	/**
-	 * 规格
+	 * 规格型号
 	 */
 	private String norm;
 	
 	/**
-	 * 所在仓库
+	 * 物资类别
 	 */
-	private String warehouse;
+	private String materialType;
 	
 	/**
-	 * 单位
+	 * 物资编码
 	 */
-	private char unit;
+	private String materialCode;
 	
 	/**
-	 * 价格
+	 * 出厂编号
 	 */
-	private BigDecimal price;
+	private String leaveFactoryCode;
 	
 	/**
-	 * 数量
+	 * 出厂日期
 	 */
-	private Integer amount;
-	
-	/**
-	 * 预警值
-	 */
-	private Integer warningValue;
+	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+	private Timestamp leaveFactoryDate;
 	
 	/**
 	 * 生产厂商
@@ -103,35 +78,14 @@ public abstract class PartsAccount extends BaseEntity {
 	private String manufacturer;
 	
 	/**
-	 * 供应商
+	 * 预警值
 	 */
-	private String supplier;
+	private Integer warningValue;
 	
 	/**
-	 * 物资类型
+	 * 创建人
 	 */
-	private String materialTypeName;
-	
-	/**
-	 * 标签码
-	 */
-	private String labelCode;
-	
-	/**
-	 * 使用寿命
-	 */
-	private String useLife;
-	
-	/**
-	 * 保修期
-	 */
-	private String warrantyPeriod;
-	
-	/**
-	 * 报废时间
-	 */
-	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-	private Timestamp scrappedTime;
+	private String founder;
 	
 	/**
 	 * 购买时间
@@ -148,8 +102,8 @@ public abstract class PartsAccount extends BaseEntity {
 	/**
 	 * 排序
 	 */
-	private Integer sort; 
-	
+	private Integer sort;
+
 	public String getDeviceName() {
 		return deviceName;
 	}
@@ -166,30 +120,6 @@ public abstract class PartsAccount extends BaseEntity {
 		this.deviceCode = deviceCode;
 	}
 
-	public String getModel() {
-		return model;
-	}
-
-	public void setModel(String model) {
-		this.model = model;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getBrand() {
-		return brand;
-	}
-
-	public void setBrand(String brand) {
-		this.brand = brand;
-	}
-
 	public String getNorm() {
 		return norm;
 	}
@@ -198,44 +128,36 @@ public abstract class PartsAccount extends BaseEntity {
 		this.norm = norm;
 	}
 
-	public String getWarehouse() {
-		return warehouse;
+	public String getMaterialType() {
+		return materialType;
 	}
 
-	public void setWarehouse(String warehouse) {
-		this.warehouse = warehouse;
+	public void setMaterialType(String materialType) {
+		this.materialType = materialType;
 	}
 
-	public char getUnit() {
-		return unit;
+	public String getMaterialCode() {
+		return materialCode;
 	}
 
-	public void setUnit(char unit) {
-		this.unit = unit;
+	public void setMaterialCode(String materialCode) {
+		this.materialCode = materialCode;
 	}
 
-	public BigDecimal getPrice() {
-		return price;
+	public String getLeaveFactoryCode() {
+		return leaveFactoryCode;
 	}
 
-	public void setPrice(BigDecimal price) {
-		this.price = price;
+	public void setLeaveFactoryCode(String leaveFactoryCode) {
+		this.leaveFactoryCode = leaveFactoryCode;
 	}
 
-	public Integer getAmount() {
-		return amount;
+	public Timestamp getLeaveFactoryDate() {
+		return leaveFactoryDate;
 	}
 
-	public void setAmount(Integer amount) {
-		this.amount = amount;
-	}
-
-	public Integer getWarningValue() {
-		return warningValue;
-	}
-
-	public void setWarningValue(Integer warningValue) {
-		this.warningValue = warningValue;
+	public void setLeaveFactoryDate(Timestamp leaveFactoryDate) {
+		this.leaveFactoryDate = leaveFactoryDate;
 	}
 
 	public String getManufacturer() {
@@ -246,68 +168,20 @@ public abstract class PartsAccount extends BaseEntity {
 		this.manufacturer = manufacturer;
 	}
 
-	public String getSupplier() {
-		return supplier;
+	public Integer getWarningValue() {
+		return warningValue;
 	}
 
-	public void setSupplier(String supplier) {
-		this.supplier = supplier;
+	public void setWarningValue(Integer warningValue) {
+		this.warningValue = warningValue;
 	}
 
-	public String getMaterialTypeName() {
-		return materialTypeName;
+	public String getFounder() {
+		return founder;
 	}
 
-	public void setMaterialTypeName(String materialTypeName) {
-		this.materialTypeName = materialTypeName;
-	}
-
-	public String getLabelCode() {
-		return labelCode;
-	}
-
-	public void setLabelCode(String labelCode) {
-		this.labelCode = labelCode;
-	}
-
-	public Integer getSort() {
-		return sort;
-	}
-
-	public void setSort(Integer sort) {
-		this.sort = sort;
-	}
-	
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
-
-	public String getUseLife() {
-		return useLife;
-	}
-
-	public void setUseLife(String useLife) {
-		this.useLife = useLife;
-	}
-
-	public String getWarrantyPeriod() {
-		return warrantyPeriod;
-	}
-
-	public void setWarrantyPeriod(String warrantyPeriod) {
-		this.warrantyPeriod = warrantyPeriod;
-	}
-
-	public Timestamp getScrappedTime() {
-		return scrappedTime;
-	}
-
-	public void setScrappedTime(Timestamp scrappedTime) {
-		this.scrappedTime = scrappedTime;
+	public void setFounder(String founder) {
+		this.founder = founder;
 	}
 
 	public Timestamp getBuyTime() {
@@ -326,4 +200,12 @@ public abstract class PartsAccount extends BaseEntity {
 		this.remark = remark;
 	}
 
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	} 
+	
 }
