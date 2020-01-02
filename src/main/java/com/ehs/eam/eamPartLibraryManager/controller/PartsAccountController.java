@@ -1,4 +1,4 @@
-package com.ehs.eam.eamPartLibraryManager;
+package com.ehs.eam.eamPartLibraryManager.controller;
 
 import java.util.List;
 
@@ -50,7 +50,6 @@ public class PartsAccountController {
 	
 	@RequestAuth(menuKeys = {"partsAccount"})
 	@RequestMapping(value = "/eam/partsAccount/savePartsAccount")
-	@ResponseBody
 	public String savePartsAccount(@RequestBody PartsAccount partsAccount, HttpServletRequest request,HttpServletResponse response) {
 		logger.info("===========进入saveEamPartLibrary方法=============");
 		ResultBean resultBean=new ResultBean();
@@ -62,7 +61,6 @@ public class PartsAccountController {
 			}
 		}
 		if (partsAccount != null) {
-			System.out.println("warehouse================="+partsAccount.getWarehouse());
 			PartsAccount pa = eamPartLibraryService.saveOrUpdateEamPart(partsAccount);
 			logger.info("===========退出saveEamPartLibrary方法=============");
 			return JsonUtils.toJsonString(resultBean.ok("保存成功！",pa.getKey()));
@@ -72,8 +70,7 @@ public class PartsAccountController {
 	
 	@RequestAuth(menuKeys = {"partsAccount"})
 	@RequestMapping(value = "/eam/partsAccount/getPartsAccountAll")
-	@ResponseBody
-	public String getPartsAccountAll(@RequestBody QueryBean queryBean,HttpServletRequest request,HttpServletResponse response) {
+	public String getPartsAccountAll(QueryBean queryBean,HttpServletRequest request,HttpServletResponse response) {
 		logger.info("===========进入getPartsAccountAll方法=============");
 		PageInfoBean pb = eamPartLibraryService.findPartsAccountAll(queryBean);
 		System.out.println("pb==============="+JsonUtils.toJsonString(pb));
@@ -82,7 +79,6 @@ public class PartsAccountController {
 	
 	@RequestAuth(menuKeys = {"partsAccount"})
 	@RequestMapping(value = "/eam/partsAccount/getPartsAccount")
-	@ResponseBody
 	public String getEamPartLibrary(HttpServletRequest request,HttpServletResponse response) {
 		logger.info("===========进入getEamPartLibrary方法=============");
 		String key=request.getParameter("key");
@@ -92,7 +88,6 @@ public class PartsAccountController {
 	
 	@RequestAuth(menuKeys = {"partsAccount"})
 	@RequestMapping(value = "/eam/partsAccount/deletePartsAccount")
-	@ResponseBody
 	public String deletePartsAccount(HttpServletRequest request,HttpServletResponse response) {
 		logger.info("===========进入deleteEamPartLibrary方法=============");
 		ResultBean resultBean=new ResultBean();
