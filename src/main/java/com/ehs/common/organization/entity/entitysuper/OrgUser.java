@@ -8,6 +8,8 @@
  */
 package com.ehs.common.organization.entity.entitysuper;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import com.ehs.common.base.entity.BaseEntity;
@@ -125,7 +127,7 @@ public abstract  class OrgUser extends BaseEntity {
 	 * 毕业时间
 	 */
 	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-	private String graduatedDate;
+	private Timestamp graduatedDate;
 	
 	/**
 	 * 角色
@@ -245,12 +247,12 @@ public abstract  class OrgUser extends BaseEntity {
 	public void setProfession(String profession) {
 		this.profession = profession;
 	}
-
-	public String getGraduatedDate() {
+	
+	public Timestamp getGraduatedDate() {
 		return graduatedDate;
 	}
 
-	public void setGraduatedDate(String graduatedDate) {
+	public void setGraduatedDate(Timestamp graduatedDate) {
 		this.graduatedDate = graduatedDate;
 	}
 
