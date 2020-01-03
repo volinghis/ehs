@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ehs.common.base.config.DataConfig;
-import com.ehs.common.base.config.RedisCacheConfig;
 import com.ehs.common.base.dao.BaseCommonDao;
 import com.ehs.common.base.data.DataModel;
 import com.ehs.common.base.entity.BaseEntity;
@@ -60,7 +59,7 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 
 	@Transactional
 	@Override
-	@CacheEvict(value = RedisCacheConfig.CACHE_NAME, key = "#t.key")
+	@CacheEvict(value = DataConfig.CACHE_NAME, key = "#t.key")
 	public <T extends BaseEntity> T saveOrUpdate(T t) {
 		logger.debug("saveOrUpdate:"+JsonUtils.toJsonString(t));
 		Assert.notNull(t, "需要操作的实例不能为空");
@@ -118,7 +117,7 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 
 	@Transactional
 	@Override
-	@CacheEvict(value = RedisCacheConfig.CACHE_NAME, key = "#key")
+	@CacheEvict(value = DataConfig.CACHE_NAME, key = "#key")
 	public <T extends BaseEntity> T deleteByKey(Class<T> tc, String key) {
 		logger.debug("deleteByKey:Class="+tc.getName()+",key="+key);
 		T t = findByKey(tc, key);
@@ -141,7 +140,7 @@ public class BaseCommonServiceImpl implements BaseCommonService {
 	}
 
 	@Override
-	@Cacheable(value = RedisCacheConfig.CACHE_NAME, key = "#key", unless = "#result == null")
+	@Cacheable(value = DataConfig.CACHE_NAME, key = "#key", unless = "#result == null")
 	public <T extends BaseEntity> T findByKey(Class<T> t, String key) {
 		logger.debug("findByKey:Class="+t.getName()+",key="+key);
 

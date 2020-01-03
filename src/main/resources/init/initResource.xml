@@ -19,54 +19,13 @@
 		<menu dataCode="systemManager" key="systemManager" name="系统管理" url="" icon="fa-cog" leaf="false" sort="9999" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'>
 			<menu dataCode="orgManager" key="orgManager" name="部门管理" url="/system/orgManager/index" icon="fa-sitemap"  parentKey="systemManager"  sort="39" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'></menu>
 			<menu dataCode="userManager" key="userManager" name="人员管理" url="/system/userManager/user/index" icon="fa-users"  parentKey="systemManager"  sort="40" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'></menu>
-			<menu dataCode="userCenter" key="userCenter" name="个人中心" url="/system/account/center/index" icon="fa-user-circle"  parentKey="systemManager"  sort="15" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'></menu>
+			<menu dataCode="userCenter" key="userCenter" name="个人中心" url="/system/account/center/index" icon="fa-user-circle"  parentKey="systemManager"  sort="15" ></menu>
 			<menu dataCode="useretting" key="useretting" name="个人设置" url="/system/account/setting/index" icon="fa-user"  parentKey="systemManager"  sort="42" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'></menu>
 			<menu dataCode="userBaseSetting" key="userBaseSetting" name="个人资料" url="/system/account/setting/baseSetting" icon="fa-user"  parentKey="systemManager"  sort="421" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]' business="true"></menu>
 			<menu dataCode="roleManager" key="roleManager" name="角色管理" url="/system/roleManager/index" icon="fa-user"  parentKey="systemManager"  sort="43" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'></menu>
 			<menu dataCode="menuManager" key="menuManager" name="菜单授权" url="/system/menuManager/index" icon="fa-list"  parentKey="systemManager"  sort="44" roles='[{"roleType":"ROLE","roleKey":"sysAdminRoleKey"}]'></menu>
 		</menu>
 		
-		<!-- 首页 -->
-		<menu dataCode="home" key="home" name="首页" url="/layout/content/portal" icon="fa-home"  sort="9990"></menu>
-		
-		<!-- 设备台账管理 -->
-		<menu dataCode="eamLedgerManager" key="eamLedgerManager" name="设备管理" url="" icon="fa-gears" leaf="false" sort="9991">
-			<menu dataCode="eamLedger" key="eamLedger" name="设备台账" url="/eam/eamLedgerManager/eamLedger/index" parentKey="eamLedgerManager" icon="fa-gears" sort="21">
-				<menu dataCode="eamLedgerEdit" key="eamLedgerEdit" name="设备台账编辑" url="/eam/eamLedgerManager/eamLedger/edit/index" business="true" sort="211"></menu>
-				<menu dataCode="eamLedgerDetail" key="eamLedgerDetail" name="设备台账详情" url="/eam/eamLedgerManager/eamLedger/details/index" business="true" sort="212"></menu>
-			</menu>
-			<menu dataCode="eamScrap" key="eamScrap" name="设备报废" url="/eam/eamLedgerManager/eamScrap/index" parentKey="eamLedgerManager" icon="fa-gears" sort="22">
-				<menu dataCode="eamScrapBaseForm" key="eamScrapBaseForm" name="设备报废步骤" url="/eam/eamLedgerManager/eamScrap/stepForm/baseForm" business="true" sort="221">
-					<menu dataCode="eamScrapStep1" key="eamScrapStep1" name="设备报废步骤1" url="/eam/eamLedgerManager/eamScrap/stepForm/step1" business="true" sort="2211"></menu>
-					<menu dataCode="eamScrapStep2" key="eamScrapStep2" name="设备报废步骤2" url="/eam/eamLedgerManager/eamScrap/stepForm/step2" business="true" sort="2212"></menu>
-					<menu dataCode="eamScrapStep3" key="eamScrapStep3" name="设备报废步骤3" url="/eam/eamLedgerManager/eamScrap/stepForm/step3" business="true" sort="2213"></menu>
-					<menu dataCode="eamScrapStep4" key="eamScrapStep4" name="设备报废步骤4" url="/eam/eamLedgerManager/eamScrap/stepForm/step4" business="true" sort="2214"></menu>
-				</menu>
-			</menu>
-			<menu dataCode="eamAllocate" key="eamAllocate" name="设备调拨" url="/eam/eamLedgerManager/eamAllocate/index" parentKey="eamLedgerManager" icon="fa-gears" sort="23"></menu>
-		</menu>
-		
-		<!-- 备件管理 -->
-		<menu dataCode="eamPartLibraryManager" key="eamPartLibraryManager" name="备件管理" url="" icon="fa-archive" leaf="false" sort="9992">
-			<menu dataCode="partsAccount" key="partsAccount" name="备件台账" parentKey="eamPartLibraryManager"  url="/eam/eamPartLibrary/partsAccount/index"  sort="31">
-				<menu dataCode="partsAccountEdit" key="partsAccountEdit" name="备件台账编辑" url="/eam/eamPartLibrary/partsAccount/component/edit/index" business="true" sort="311"></menu>
-				<menu dataCode="partsAccountDetails" key="partsAccountDetails" name="备件台账详情" url="/eam/eamPartLibrary/partsAccount/component/details/index" business="true" sort="312"></menu>
-			</menu>
-			<menu dataCode="enterWarehouse" key="enterWarehouse" name="入库管理" url="/eam/eamPartLibrary/enterWarehouse/index" parentKey="eamPartLibraryManager" sort="32">
-				<menu dataCode="enterWarehouseEdit" key="enterWarehouseEdit" name="入库编辑" url="/eam/eamPartLibrary/enterWarehouse/component/edit/index" business="true" sort="321"></menu>
-			</menu>
-			<menu dataCode="applyForUse" key="applyForUse" name="领用申请" url="/eam/eamPartLibrary/applyForUse/index" parentKey="eamPartLibraryManager" icon="fa-gears" sort="33">
-				<menu dataCode="stepForm" key="stepForm" name="申请步骤" url="/eam/eamPartLibrary/applyForUse/component/stepForm/baseForm/index" business="true" sort="331">
-					<menu dataCode="partStepOne" key="partStepOne" name="领用步骤1" url="/eam/eamPartLibrary/applyForUse/component/stepForm/stepOne/index" business="true" sort="3311"></menu>
-					<menu dataCode="partStepTwo" key="partStepTwo" name="领用步骤2" url="/eam/eamPartLibrary/applyForUse/component/stepForm/stepTwo/index" business="true" sort="3312"></menu>
-					<menu dataCode="partStepThree" key="partStepThree" name="领用步骤3" url="/eam/eamPartLibrary/applyForUse/component/stepForm/stepThree/index" business="true" sort="3313"></menu>
-					<menu dataCode="partStepFour" key="partStepFour" name="领用步骤4" url="/eam/eamPartLibrary/applyForUse/component/stepForm/stepFour/index" business="true" sort="3314"></menu>
-				</menu>
-				<menu dataCode="applyDetails" key="applyDetails" name="领用详情" url="/eam/eamPartLibrary/applyForUse/component/details/index" business="true" sort="332"></menu>
-			</menu>
-			<menu dataCode="outWarehouse" key="outWarehouse" name="出库管理" url="/eam/eamPartLibrary/outWarehouse/index" parentKey="eamPartLibraryManager" sort="34">
-				<menu dataCode="outWarehouseEdit" key="outWarehouseEdit" name="出库编辑" url="/eam/eamPartLibrary/outWarehouse/component/edit/index" business="true" sort="341"></menu>
-			</menu>
-		</menu>
+	
 	</menus>
 </root>

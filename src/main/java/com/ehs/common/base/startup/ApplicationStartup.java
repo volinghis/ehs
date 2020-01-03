@@ -35,12 +35,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import com.ehs.common.base.config.RedisCacheConfig;
 import com.ehs.common.base.entity.BaseEntity;
 import com.ehs.common.base.service.BaseCommonService;
 import com.ehs.common.base.service.InitDataService;
@@ -72,14 +68,10 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 	@Resource
 	private BaseCommonService baseCommonService;
 	
-	
-	@Resource
-	private RedisTemplate redisTemplate;
+
 	
 	
 	
-	@Value("${spring.redis.cache.applicaion.model}")
-	private String applicationModel;
 	
 
 	
@@ -103,11 +95,8 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 	*/
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		if(StringUtils.equalsIgnoreCase(applicationModel, RedisCacheConfig.CACHE_MODEL_PROD)) {
-			logger.info("开始清除缓存数据...,");
-			redisTemplate.getConnectionFactory().getConnection().flushAll();
-			logger.info("结束清除缓存数据");
-		}
+		
+
 		//初始化数据
 		initResource();
 

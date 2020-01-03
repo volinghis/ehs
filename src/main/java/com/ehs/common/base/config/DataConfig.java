@@ -11,6 +11,7 @@ public class DataConfig {
 
 
 
+	public static final String CACHE_NAME="defaultCache";
 	
 	public static final String ENTITY_HIS_SUFFIX="His";
 	
