@@ -16,7 +16,19 @@ public class ProcessCommentBean {
 	private String content;
 
 
+	private String operType;
 	
+	
+	
+	
+
+	public String getOperType() {
+		return operType;
+	}
+
+	public void setOperType(String operType) {
+		this.operType = operType;
+	}
 
 	public Date getCreationTime() {
 		return creationTime;

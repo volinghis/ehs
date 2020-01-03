@@ -33,11 +33,12 @@ import com.ehs.common.flow.bean.ProcessCommentBean;
 import com.ehs.common.flow.bean.ProcessDefineBean;
 import com.ehs.common.flow.bean.ProcessInstanceBean;
 import com.ehs.common.flow.bean.ProcessStepBean;
+import com.ehs.common.flow.enums.FlowTaskOper;
 import com.ehs.common.oper.bean.ResultBean;
 import com.ehs.common.organization.entity.OrgUser;
 
 @Controller
-public class ProcessInfoController {
+public class FlowBaseController {
 
 	@Resource
 	private RuntimeService runtimeService;
@@ -82,18 +83,13 @@ public class ProcessInfoController {
 		BpmnModel bpmnModel = repositoryService.getBpmnModel(repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefineKey).latestVersion().singleResult().getId());
 		Assert.notNull(bpmnModel, "bpmnModel can not be find");
 
-		List<org.flowable.bpmn.model.Process> processes = bpmnModel.getProcesses();
-		Assert.notEmpty(processes, "process can not be find");
-
-		org.flowable.bpmn.model.Process process = processes.get(0);
+		org.flowable.bpmn.model.Process process =  bpmnModel.getMainProcess();
 		ProcessDefineBean pdb = new ProcessDefineBean();
 		pdb.setName(process.getName());
 		pdb.setKey(process.getId());
 
 		List<ProcessStepBean> steps = new ArrayList<ProcessStepBean>();
 		Collection<FlowElement> flowElements = process.getFlowElements();
-		System.out.println(666);
-		System.out.println(flowElements);
 		if (flowElements != null) {
 			for (FlowElement flowElement : flowElements) {
 				if(flowElement instanceof UserTask ) {
@@ -116,8 +112,6 @@ public class ProcessInfoController {
 			}
 		}
 		pdb.setSteps(steps);
-		System.out.println("2223");
-		System.out.println(JsonUtils.toJsonString(pdb));
 		return JsonUtils.toJsonString(pdb);
 	}
 
@@ -125,7 +119,7 @@ public class ProcessInfoController {
 	@RequestMapping(value = "/flow/flowInfo/getProcessCommentsByProcessInstanceKey")
 	public String getProcessCommentsByProcessInstanceKey(HttpServletRequest request, HttpServletResponse response) {
 
-		String processInstanceKey = request.getParameter("ProcessInstanceKey");
+		String processInstanceKey = request.getParameter("processInstanceKey");
 		Assert.notNull(processInstanceKey, "ProcessInstanceKey must be not null");
 
 		List<Comment> comments = taskService.getProcessInstanceComments(processInstanceKey);
@@ -142,6 +136,15 @@ public class ProcessInfoController {
 						pcb.setCreationName(ou.getName());
 					}
 				}
+				String oper="";
+				if(StringUtils.equals(FlowTaskOper.AGREE.name(), c.getType())) {
+					oper="同意";
+				}else if(StringUtils.equals(FlowTaskOper.COMMIT.name(), c.getType())){
+					oper="提交";
+				}else if(StringUtils.equals(FlowTaskOper.REJECT.name(), c.getType())){
+					oper="驳回";
+				}
+				pcb.setOperType(oper);
 				pcbList.add(pcb);
 			}
 		}
@@ -152,7 +155,7 @@ public class ProcessInfoController {
 	@RequestMapping(value = "/flow/flowInfo/getProcessInstanceByKey")
 	public String getProcessInstanceByKey(HttpServletRequest request, HttpServletResponse response) {
 
-		String processInstanceKey = request.getParameter("ProcessInstanceKey");
+		String processInstanceKey = request.getParameter("processInstanceKey");
 		Assert.notNull(processInstanceKey, "ProcessInstanceKey must be not null");
 
 		ProcessInstanceBean pib=new ProcessInstanceBean();

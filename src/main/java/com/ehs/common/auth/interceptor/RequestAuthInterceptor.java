@@ -27,6 +27,7 @@ public class RequestAuthInterceptor implements HandlerInterceptor {
 			throws Exception {
 		SysAccessUser.remove();
 		SessionBean sessionBean=SpringUtils.getBean(SessionBean.class);
+		System.out.println(httpRequest.getRequestURI());
 		HandlerMethod handlerMethod = (HandlerMethod) handler;      
 		Method method = handlerMethod.getMethod();   
 		int statusCode=sessionBean.valid(httpRequest,method);

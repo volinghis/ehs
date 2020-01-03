@@ -25,7 +25,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.ehs.common.auth.local.SysAccessUser;
 import com.ehs.common.base.config.DataConfig;
 import com.ehs.common.base.data.DataModel;
-import com.ehs.common.base.utils.AccessUtils;
 import com.ehs.common.base.utils.BaseUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -106,12 +105,10 @@ public  abstract class BaseEntity implements java.io.Serializable{
 	 */
 	private String owner;
 	
-	@Transient
 	private String ownerName;
 	
 	private String ownerOrg;
 	
-	@Transient
 	private String ownerOrgName;
 	/**
 	 * 数据拥有者创建时间
@@ -121,12 +118,10 @@ public  abstract class BaseEntity implements java.io.Serializable{
 
 	private String creation;
 	
-	@Transient
 	private String creationName;
 	
 	
 	private String creationOrg;
-	@Transient
 	private String creationOrgName;
 	
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",  timezone="GMT+8")
@@ -187,36 +182,24 @@ public  abstract class BaseEntity implements java.io.Serializable{
 		this.completePoint = completePoint;
 	}
 	public String getOwnerName() {
-		if(StringUtils.isNotBlank(owner)) {
-			return AccessUtils.getUserNameByUserKey(owner);
-		}
 		return ownerName;
 	}
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
 	}
 	public String getOwnerOrgName() {
-		if(StringUtils.isNotBlank(ownerOrg)) {
-			return AccessUtils.getOrgNameByOrgKey(ownerOrg);
-		}
 		return ownerOrgName;
 	}
 	public void setOwnerOrgName(String ownerOrgName) {
 		this.ownerOrgName = ownerOrgName;
 	}
 	public String getCreationName() {
-		if(StringUtils.isNotBlank(creation)) {
-			return AccessUtils.getUserNameByUserKey(creation);
-		}
 		return creationName;
 	}
 	public void setCreationName(String creationName) {
 		this.creationName = creationName;
 	}
 	public String getCreationOrgName() {
-		if(StringUtils.isNotBlank(creationOrg)) {
-			return AccessUtils.getOrgNameByOrgKey(creationOrg);
-		}
 		return creationOrgName;
 	}
 	public void setCreationOrgName(String creationOrgName) {
@@ -316,10 +299,12 @@ public  abstract class BaseEntity implements java.io.Serializable{
 		if(SysAccessUser.get()!=null&&StringUtils.isNotBlank(SysAccessUser.get().getUserKey())) {
 			this.setCreation(SysAccessUser.get().getUserKey());
 			this.setOwner(SysAccessUser.get().getUserKey());
+			this.setOwnerName(SysAccessUser.get().getUsername());
 		}
 		if(SysAccessUser.get()!=null&&StringUtils.isNotBlank(SysAccessUser.get().getOrgKey())) {
 			this.setCreationOrg(SysAccessUser.get().getOrgKey());
 			this.setOwnerOrg(SysAccessUser.get().getOrgKey());
+			this.setOwnerOrgName(SysAccessUser.get().getOrgName());
 		}
 	}
 	/**
@@ -344,9 +329,11 @@ public  abstract class BaseEntity implements java.io.Serializable{
 		this.setCreationTime(BaseUtils.getNow());
 		if(SysAccessUser.get()!=null&&StringUtils.isNotBlank(SysAccessUser.get().getUserKey())) {
 			this.setCreation(SysAccessUser.get().getUserKey());
+			this.setCreationName(SysAccessUser.get().getUsername());
 		}
 		if(SysAccessUser.get()!=null&&StringUtils.isNotBlank(SysAccessUser.get().getOrgKey())) {
 			this.setCreationOrg(SysAccessUser.get().getOrgKey());
+			this.setCreationOrgName(SysAccessUser.get().getOrgName());
 		}
 	}
 	public String getOwner() {
