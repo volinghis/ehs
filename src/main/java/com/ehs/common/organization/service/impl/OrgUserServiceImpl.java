@@ -471,7 +471,7 @@ public class OrgUserServiceImpl implements OrgUserService{
 	@Override
 	public OrgUser findOrgUserBySysUserKey(String code) {
 		// TODO Auto-generated method stub
-		Assert.notNull(code, "params accoount is required");
+		Assert.notNull(code, "params account is required");
 		SysUser sysUser=loginDao.findByAccount(code);
 		if (sysUser!=null) {
 			return orgUserDao.findOrgUserBySysUserKey(sysUser.getKey());

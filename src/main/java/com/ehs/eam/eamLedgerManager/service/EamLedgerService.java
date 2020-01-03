@@ -8,8 +8,13 @@
  */
 package com.ehs.eam.eamLedgerManager.service;
 
+import java.util.List;
+
 import com.ehs.common.oper.bean.PageInfoBean;
 import com.ehs.eam.eamLedgerManager.bean.EamLedgerQueryBean;
+import com.ehs.eam.eamLedgerManager.bean.EamRequestBean;
+import com.ehs.eam.eamLedgerManager.entity.EamLedger;
+import com.ehs.eam.eamLedgerManager.entity.EamParameters;
 
 /**   
 * Copyright: Copyright (c) 2019 西安东恒鑫源软件开发有限公司
@@ -44,4 +49,8 @@ public interface EamLedgerService {
 	*/
 	PageInfoBean findEamLedgerList(EamLedgerQueryBean querybean);
 
+	
+	public void saveEamLedger(EamRequestBean eamRequestBean);
+	
+	public List<EamParameters> getEamParametersByKey(String code);
 }
