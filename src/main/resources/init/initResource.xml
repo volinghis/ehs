@@ -68,5 +68,24 @@
 				<menu dataCode="outWarehouseEdit" key="outWarehouseEdit" name="出库编辑" url="/eam/eamPartLibrary/outWarehouse/component/edit/index" business="true" sort="341"></menu>
 			</menu>
 		</menu>
+		
+		<!-- 巡检 -->
+		<menu dataCode="eamInspection" key="eamInspection" name="设备巡检" url="" icon="fa-wrench" leaf="false" sort="9993">
+			<menu dataCode="eamInspectionTask" key="eamInspectionTask" name="巡检任务" url="/eam/eamInspection/inspectionTask/index" icon="fa-tasks" parentKey="eamInspection" sort="4">
+				<menu dataCode="eamInspectionDetails" key="eamInspectionDetails" name="巡检任务详情" url="/eam/eamInspection/inspectionTask/component/details/index" business="true" sort="41"></menu>
+				<menu dataCode="eamInspectionParam" key="eamInspectionParam" name="巡检参数" url="/eam/eamInspection/inspectionTask/component/paramsTable/index" business="true" sort="42"></menu>
+			</menu>
+		</menu>
+		<!-- 基础数据管理 -->
+		<menu dataCode="eamBasicDataManager" key="eamBasicDataManager" name="基础数据管理" url="" icon="fa-database" leaf="false" sort="9994">
+			<menu dataCode="eamInfo" key="eamInfo" name="基础数据库" url="/eam/eamBasicData/index" parentKey="eamBasicDataManager" sort="51">
+				<menu dataCode="eamInfoAdd" key="eamInfoAdd" name="基础数据新增页" url="/eam/eamBasicData/index" parentKey="eamInspection" business="true" sort="511"></menu>
+			</menu>
+		</menu>
+		<!-- 资料库 -->
+		<menu dataCode="eamDataBase" key="eamDataBase" name="资料库" url="" icon="fa-folder-o" leaf="false" sort="9995">
+			<menu dataCode="eamDataBaseInfo" key="eamDataBaseInfo" name="设备资料" url="/eam/eamDataBase/index" parentKey="eamDataBase" sort="61"></menu>
+		</menu>
+		
 	</menus>
 </root>
