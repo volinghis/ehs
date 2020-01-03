@@ -27,7 +27,7 @@
 		</menu>
 		
 		<!-- 首页 -->
-		<menu dataCode="home" key="home" name="首页" url="/system/account/center/index" icon="fa-home" leaf="false" sort="9990"></menu>
+		<menu dataCode="home" key="home" name="首页" url="/layout/content/portal" icon="fa-home"  sort="9990"></menu>
 		
 		<!-- 设备台账管理 -->
 		<menu dataCode="eamLedgerManager" key="eamLedgerManager" name="设备管理" url="" icon="fa-gears" leaf="false" sort="9991">
